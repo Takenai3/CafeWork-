@@ -15,6 +15,10 @@ public class Cafe {
     private Integer availableSeats;
     private String openHours;
     private Integer ownerId;
+    // Bổ sung để phục vụ lọc nâng cao
+    private Double rating;     // Điểm đánh giá
+    private Double latitude;   // Vĩ độ của quán
+    private Double longitude;  // Kinh độ của quán
 
     public Cafe() {}
 

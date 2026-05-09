@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Main<cafework>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cafework.Main",
+            "projectName": "cafework",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

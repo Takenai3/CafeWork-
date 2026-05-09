@@ -1,5 +1,7 @@
+// src/pages/HomePage.jsx
 import React from 'react';
 import MapArea from '../components/MapArea';
+import SearchBar from '../components/Search/SearchBar'; // Import component SearchBar
 
 const HomePage = () => {
   return (
@@ -50,16 +52,14 @@ const HomePage = () => {
           width: '380px', backgroundColor: '#fafafa', borderRight: '1px solid #ccc',
           display: 'flex', flexDirection: 'column', overflowY: 'auto', zIndex: 10
         }}>
-          {/* Ô tìm kiếm */}
-          <div style={{ padding: '15px' }}>
-            <input 
-              type="text" placeholder="🔍 エリアや条件で検索..." 
-              style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}
-            />
+          
+          {/* Ô tìm kiếm: ĐÃ THAY THẾ BẰNG COMPONENT SEARCHBAR */}
+          <div style={{ padding: '15px', borderBottom: '1px solid #eaeaea' }}>
+             <SearchBar />
           </div>
 
           {/* Panel Tuyến đường */}
-          <div style={{ margin: '0 15px', padding: '15px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <div style={{ margin: '15px', padding: '15px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
             <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>🧭 ルート案内 (6)</h4>
             <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>目的地: カフェ・ジアン</div>
             
@@ -87,22 +87,15 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Chỗ này sau bệ hạ sẽ nhét danh sách quán Cafe vào */}
-          <div style={{ padding: '15px', marginTop: '10px' }}>
-            <div style={{ height: '150px', backgroundColor: '#eee', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Danh sách Cafe lấp ló ở đây...
-            </div>
-          </div>
         </div>
 
         {/* CỘT PHẢI: BẢN ĐỒ VÀ BẢNG TRÔI NỔI (Số 9, 10) */}
         <div style={{ flex: 1, position: 'relative' }}>
           
-          {/* Lớp dưới cùng: Bản đồ của bệ hạ */}
+          {/* Lớp dưới cùng: Bản đồ */}
           <MapArea />
 
           {/* Lớp bề mặt: Bảng chỉ đường trôi nổi (Số 10) */}
-          {/* Lưu ý: zIndex phải > 400 để nổi lên trên bản đồ Leaflet */}
           <div style={{ 
             position: 'absolute', top: '20px', right: '20px', zIndex: 1000,
             width: '300px', backgroundColor: '#fff', borderRadius: '8px', 
