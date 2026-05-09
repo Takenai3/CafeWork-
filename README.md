@@ -5,17 +5,14 @@ Bước 1: Yêu cầu hệ thống
 Đảm bảo máy tính của bạn đã cài đặt Node.js (Khuyên dùng bản LTS).
 Kiểm tra bằng cách mở Terminal và gõ:
 
-Bash
 node -v
 npm -v
 Bước 2: Khởi tạo dự án bằng Vite
 Mở Terminal tại thư mục bạn muốn chứa dự án và chạy lệnh:
 
-Bash
 npm create vite@latest my-map-project -- --template react
 cd my-map-project
 Bước 3: Cài đặt thư viện
 Chúng ta chỉ cài đặt thư viện bản đồ cốt lõi leaflet:
 
-Bash
 npm install leaflet
