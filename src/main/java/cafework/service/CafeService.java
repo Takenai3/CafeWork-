@@ -1,3 +1,4 @@
+import java.util.Optional; // ← thêm dòng này
 package cafework.service;
 
 import cafework.dto.SeatStatusUpdateRequest;

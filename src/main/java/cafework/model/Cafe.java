@@ -11,30 +11,38 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "cafes")
 public class Cafe {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
     private String address;
     private String description;
-    
+
     // Ánh xạ đích danh vào cột seat_status dưới Database PostgreSQL
     @Column(name = "seat_status")
-    private String seatStatus; 
+    private String seatStatus;
 
     private String openHours;
     private String ownerId;
-    
-    // Bổ sung để phục vụ lọc nâng cao
-    private Double rating;     // Điểm đánh giá
-    private Double latitude;   // Vĩ độ của quán
-    private Double longitude;  // Kinh độ của quán
 
-    public Cafe() {}
+    @Column(name = "open_hours")
+    private String openHours;
+
+    @Column(name = "owner_id")
+    private String ownerId;
+
+    // Bổ sung để phục vụ lọc nâng cao
+    private Double rating; // Điểm đánh giá
+    private Double latitude; // Vĩ độ của quán
+    private Double longitude; // Kinh độ của quán
+
+    public Cafe() {
+    }
 
     // --- GETTERS & SETTERS ---
 
@@ -117,7 +125,7 @@ public class Cafe {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
-    
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "cafe_id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<CafeImage> images;
