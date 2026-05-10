@@ -1,12 +1,16 @@
 package cafework.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 @Entity
 @Table(name = "cafes")
 public class Cafe {
@@ -112,5 +116,18 @@ public class Cafe {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+    
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cafe_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private List<CafeImage> images;
+
+    // Getter và Setter cho danh sách ảnh
+    public List<CafeImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<CafeImage> images) {
+        this.images = images;
     }
 }
