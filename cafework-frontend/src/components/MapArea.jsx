@@ -29,29 +29,31 @@ const MapArea = () => {
       mapInstanceRef.current = map;
 
       // 2. PHÉP THUẬT DÒ TÌM VỊ TRÍ HIỆN TẠI
+      // 2. PHÉP THUẬT DÒ TÌM VỊ TRÍ HIỆN TẠI (ĐÃ GIA CỐ)
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            const { latitude, longitude } = position.coords;
-            const userLocation = [latitude, longitude];
+            // LỚP GIÁP BẢO VỆ MỚI: 
+            // Chỉ làm việc khi mapInstanceRef.current tồn tại VÀ chưa bị phá hủy (_leaflet_id)
+            if (mapInstanceRef.current && mapInstanceRef.current._leaflet_id) {
+              const { latitude, longitude } = position.coords;
+              const userLocation = [latitude, longitude];
 
-            // Di chuyển tâm bản đồ về vị trí của bệ hạ
-            map.setView(userLocation, 16); 
+              mapInstanceRef.current.setView(userLocation, 16); 
 
-            // Cắm một chiếc ghim đặc biệt để đánh dấu vị trí của bệ hạ
-            L.marker(userLocation)
-              .addTo(map)
-              .bindPopup('<b>あなたはここにいる</b>')
-              .openPopup();
-            
-            // Vẽ một vòng tròn nhỏ xung quanh để chỉ độ chính xác
-            L.circle(userLocation, { radius: 100, color: 'blue', fillOpacity: 0.1 }).addTo(map);
+              L.marker(userLocation)
+                .addTo(mapInstanceRef.current)
+                .bindPopup('<b>Bệ hạ đang ngự tại đây!</b>')
+                .openPopup();
+              
+              L.circle(userLocation, { radius: 100, color: 'blue', fillOpacity: 0.1 })
+                .addTo(mapInstanceRef.current);
+            }
           },
           (error) => {
             console.error("Lỗi khi lấy vị trí:", error);
-            alert("あなたの現在地を特定できません。ブラウザの位置情報へのアクセス権限をご確認ください。");
           },
-          { enableHighAccuracy: true } // Yêu cầu độ chính xác cao nhất
+          { enableHighAccuracy: true }
         );
       }
     }

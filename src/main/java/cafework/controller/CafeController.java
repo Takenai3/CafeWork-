@@ -1,13 +1,23 @@
 package cafework.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import cafework.model.Cafe;
 import cafework.repository.CafeRepository;
 import cafework.service.CafeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cafes")
@@ -28,7 +38,7 @@ public class CafeController {
     }
 
     @GetMapping("/{id}")
-    public Cafe getCafeById(@PathVariable Integer id) {
+    public Cafe getCafeById(@PathVariable String id) {
         return cafeRepository.findById(id).orElse(null);
     }
 
@@ -38,13 +48,13 @@ public class CafeController {
     }
 
     @PutMapping("/{id}")
-    public Cafe updateCafe(@PathVariable Integer id, @RequestBody Cafe cafe) {
+    public Cafe updateCafe(@PathVariable String id, @RequestBody Cafe cafe) {
         cafe.setId(id);
         return cafeRepository.save(cafe);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCafe(@PathVariable Integer id) {
+    public void deleteCafe(@PathVariable String id) {
         cafeRepository.deleteById(id);
     }
 

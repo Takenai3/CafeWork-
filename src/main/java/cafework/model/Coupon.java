@@ -1,34 +1,38 @@
 package cafework.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "coupons")
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
-    private Integer cafeId;
+    private String cafeId;
     private String title;
     private String description;
-    private Integer discountPercent;
+    private String discountPercent;
 
     public Coupon() {}
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getCafeId() {
+    public String getCafeId() {
         return cafeId;
     }
 
-    public void setCafeId(Integer cafeId) {
+    public void setCafeId(String cafeId) {
         this.cafeId = cafeId;
     }
 
@@ -48,11 +52,11 @@ public class Coupon {
         this.description = description;
     }
 
-    public Integer getDiscountPercent() {
+    public String getDiscountPercent() {
         return discountPercent;
     }
 
-    public void setDiscountPercent(Integer discountPercent) {
+    public void setDiscountPercent(String discountPercent) {
         this.discountPercent = discountPercent;
     }
 }
