@@ -8,15 +8,25 @@
 -- Started on 2026-05-06 22:14:25
 
 SET statement_timeout = 0;
+
 SET lock_timeout = 0;
+
 SET idle_in_transaction_session_timeout = 0;
+
 SET transaction_timeout = 0;
+
 SET client_encoding = 'UTF8';
+
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
+
+SELECT pg_catalog.set_config ('search_path', '', false);
+
 SET check_function_bodies = false;
+
 SET xmloption = content;
+
 SET client_min_messages = warning;
+
 SET row_security = off;
 
 SET default_tablespace = '';
@@ -34,7 +44,6 @@ CREATE TABLE public.bookmarks (
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-
 ALTER TABLE public.bookmarks OWNER TO postgres;
 
 --
@@ -43,12 +52,11 @@ ALTER TABLE public.bookmarks OWNER TO postgres;
 --
 
 CREATE TABLE public.cafe_images (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     cafe_id uuid NOT NULL,
     image_url text NOT NULL,
     uploaded_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
-
 
 ALTER TABLE public.cafe_images OWNER TO postgres;
 
@@ -58,22 +66,33 @@ ALTER TABLE public.cafe_images OWNER TO postgres;
 --
 
 CREATE TABLE public.cafes (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     owner_id uuid NOT NULL,
     name character varying(255) NOT NULL,
     description text,
     address character varying(255) NOT NULL,
-    latitude numeric(10,8),
-    longitude numeric(11,8),
+    latitude numeric(10, 8),
+    longitude numeric(11, 8),
     open_hours character varying(100),
     phone character varying(20),
     seat_status character varying(20) DEFAULT 'AVAILABLE'::character varying,
     crowd_status character varying(100),
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT cafes_seat_status_check CHECK (((seat_status)::text = ANY ((ARRAY['AVAILABLE'::character varying, 'ALMOST_FULL'::character varying, 'FULL'::character varying])::text[])))
+    CONSTRAINT cafes_seat_status_check CHECK (
+        (
+            (seat_status)::text = ANY (
+                (
+                    ARRAY[
+                        'AVAILABLE'::character varying,
+                        'ALMOST_FULL'::character varying,
+                        'FULL'::character varying
+                    ]
+                )::text []
+            )
+        )
+    )
 );
-
 
 ALTER TABLE public.cafes OWNER TO postgres;
 
@@ -83,16 +102,15 @@ ALTER TABLE public.cafes OWNER TO postgres;
 --
 
 CREATE TABLE public.coupons (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     cafe_id uuid NOT NULL,
     code character varying(50) NOT NULL,
     description text,
-    discount_value numeric(10,2),
+    discount_value numeric(10, 2),
     valid_from timestamp with time zone NOT NULL,
     valid_to timestamp with time zone NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
-
 
 ALTER TABLE public.coupons OWNER TO postgres;
 
@@ -102,14 +120,13 @@ ALTER TABLE public.coupons OWNER TO postgres;
 --
 
 CREATE TABLE public.otps (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     email character varying(255) NOT NULL,
     otp_code character varying(6) NOT NULL,
     expires_at timestamp with time zone NOT NULL,
     is_used boolean DEFAULT false,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
-
 
 ALTER TABLE public.otps OWNER TO postgres;
 
@@ -119,17 +136,32 @@ ALTER TABLE public.otps OWNER TO postgres;
 --
 
 CREATE TABLE public.reviews (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     user_id uuid NOT NULL,
     cafe_id uuid NOT NULL,
     rating integer NOT NULL,
     content text,
     language character varying(10),
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT reviews_language_check CHECK (((language)::text = ANY ((ARRAY['JA'::character varying, 'EN'::character varying])::text[]))),
-    CONSTRAINT reviews_rating_check CHECK (((rating >= 1) AND (rating <= 5)))
+    CONSTRAINT reviews_language_check CHECK (
+        (
+            (language)::text = ANY (
+                (
+                    ARRAY[
+                        'JA'::character varying,
+                        'EN'::character varying
+                    ]
+                )::text []
+            )
+        )
+    ),
+    CONSTRAINT reviews_rating_check CHECK (
+        (
+            (rating >= 1)
+            AND (rating <= 5)
+        )
+    )
 );
-
 
 ALTER TABLE public.reviews OWNER TO postgres;
 
@@ -139,13 +171,12 @@ ALTER TABLE public.reviews OWNER TO postgres;
 --
 
 CREATE TABLE public.search_histories (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     user_id uuid NOT NULL,
     search_query character varying(255),
     filters jsonb,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
-
 
 ALTER TABLE public.search_histories OWNER TO postgres;
 
@@ -155,16 +186,26 @@ ALTER TABLE public.search_histories OWNER TO postgres;
 --
 
 CREATE TABLE public.users (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid () NOT NULL,
     email character varying(255) NOT NULL,
     password_hash character varying(255) NOT NULL,
     full_name character varying(255) NOT NULL,
     role character varying(20) NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT users_role_check CHECK (((role)::text = ANY ((ARRAY['USER'::character varying, 'OWNER'::character varying])::text[])))
+    CONSTRAINT users_role_check CHECK (
+        (
+            (role)::text = ANY (
+                (
+                    ARRAY[
+                        'USER'::character varying,
+                        'OWNER'::character varying
+                    ]
+                )::text []
+            )
+        )
+    )
 );
-
 
 ALTER TABLE public.users OWNER TO postgres;
 
@@ -173,6 +214,7 @@ ALTER TABLE public.users OWNER TO postgres;
 -- Dependencies: 222
 -- Data for Name: bookmarks; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.bookmarks (user_id, cafe_id, created_at) FROM stdin;
 20000000-0000-0000-0000-000000000001	30000000-0000-0000-0000-000000000002	2026-05-06 22:07:05.238232+07
@@ -227,12 +269,12 @@ COPY public.bookmarks (user_id, cafe_id, created_at) FROM stdin;
 20000000-0000-0000-0000-000000000050	30000000-0000-0000-0000-000000000001	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4864 (class 0 OID 21170)
 -- Dependencies: 219
 -- Data for Name: cafe_images; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.cafe_images (id, cafe_id, image_url, uploaded_at) FROM stdin;
 40377b8d-2d80-4ff4-a693-d13e1b659aec	30000000-0000-0000-0000-000000000002	https://example.com/images/cafe_2_photo_1.jpg	2026-05-06 22:07:05.238232+07
@@ -287,12 +329,12 @@ ec56e96f-866d-4bfe-9d70-fddb044c23ac	30000000-0000-0000-0000-000000000007	https:
 dcbd6a08-d565-4bd5-a400-415391708c94	30000000-0000-0000-0000-000000000001	https://example.com/images/cafe_1_photo_50.jpg	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4863 (class 0 OID 21153)
 -- Dependencies: 218
 -- Data for Name: cafes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.cafes (id, owner_id, name, description, address, latitude, longitude, open_hours, phone, seat_status, crowd_status, created_at, updated_at) FROM stdin;
 30000000-0000-0000-0000-000000000001	10000000-0000-0000-0000-000000000001	Tranquil Books & Coffee	Không gian yên tĩnh, nhiều sách, phù hợp làm việc.	5 Nguyễn Quang Bích, Hoàn Kiếm, HN	21.03102300	105.84581400	08:00 - 22:00	0912345671	AVAILABLE	Vắng khách	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
@@ -307,12 +349,12 @@ COPY public.cafes (id, owner_id, name, description, address, latitude, longitude
 30000000-0000-0000-0000-000000000010	10000000-0000-0000-0000-000000000010	Lofita Tea & Coffee	View ngắm phố phường đẹp, nhiều ánh sáng.	Phố Huế, Hai Bà Trưng, HN	21.01824400	105.85104800	08:00 - 22:00	0912345670	AVAILABLE	Vắng khách	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4865 (class 0 OID 21184)
 -- Dependencies: 220
 -- Data for Name: coupons; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.coupons (id, cafe_id, code, description, discount_value, valid_from, valid_to, created_at) FROM stdin;
 496a535c-0825-4866-a47d-d8ebe0cf01c7	30000000-0000-0000-0000-000000000002	SALE001	Giảm giá 20000 VNĐ cho khách hàng	20000.00	2026-05-06 22:07:05.238232+07	2026-06-05 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
@@ -367,12 +409,12 @@ e53e1e93-338c-45e1-8d80-aa0b39c21325	30000000-0000-0000-0000-000000000010	SALE04
 14f4d8ad-3f2a-45d9-b88a-b5eaf2e7edf9	30000000-0000-0000-0000-000000000001	SALE050	Giảm giá 10000 VNĐ cho khách hàng	10000.00	2026-05-06 22:07:05.238232+07	2026-06-05 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4869 (class 0 OID 21249)
 -- Dependencies: 224
 -- Data for Name: otps; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.otps (id, email, otp_code, expires_at, is_used, created_at) FROM stdin;
 f25dc956-db66-4592-aee0-17b1e932a276	user1@test.com	679315	2026-05-06 22:09:05.238232+07	f	2026-05-06 22:07:05.238232+07
@@ -427,12 +469,12 @@ ed36d438-8e2e-4cf1-a44f-2d7fcf25b47d	user48@test.com	597872	2026-05-06 22:09:05.
 bc9b295e-305d-4471-955a-897749262baa	user50@test.com	786616	2026-05-06 22:09:05.238232+07	f	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4866 (class 0 OID 21198)
 -- Dependencies: 221
 -- Data for Name: reviews; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.reviews (id, user_id, cafe_id, rating, content, language, created_at) FROM stdin;
 451f22b9-6f1e-4547-87ee-1f76d25d944c	20000000-0000-0000-0000-000000000001	30000000-0000-0000-0000-000000000002	2	Great space for working, strong wifi.	EN	2026-05-06 22:07:05.238232+07
@@ -487,12 +529,12 @@ d1462f16-e148-4c6d-b4d3-af12e06fab3d	20000000-0000-0000-0000-000000000048	300000
 80b960e8-de53-4cb4-b26c-1bbb9f8e41b9	20000000-0000-0000-0000-000000000050	30000000-0000-0000-0000-000000000001	1	静かで仕事しやすいです！また来ます。	JA	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4868 (class 0 OID 21235)
 -- Dependencies: 223
 -- Data for Name: search_histories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.search_histories (id, user_id, search_query, filters, created_at) FROM stdin;
 e593dec4-c689-4b11-9975-0fe32dbaee9f	20000000-0000-0000-0000-000000000001	Yên tĩnh làm việc	{"has_wifi": true, "quiet_level": "high", "has_smoking_area": false}	2026-05-06 22:07:05.238232+07
@@ -547,12 +589,12 @@ a1c77970-c5f5-4d4d-aa12-8c79ebd40158	20000000-0000-0000-0000-000000000049	Yên t
 3d5108c5-6401-4898-b714-42cc3ce812ce	20000000-0000-0000-0000-000000000050	Có phòng họp	{"has_wifi": true, "quiet_level": "high", "has_smoking_area": false}	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4862 (class 0 OID 21140)
 -- Dependencies: 217
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
+
 
 COPY public.users (id, email, password_hash, full_name, role, created_at, updated_at) FROM stdin;
 10000000-0000-0000-0000-000000000001	owner1@cafework.com	hashed_pwd_123	Tanaka Hiroshi	OWNER	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
@@ -617,15 +659,13 @@ COPY public.users (id, email, password_hash, full_name, role, created_at, update
 20000000-0000-0000-0000-000000000050	user50@test.com	hashed_pwd_456	Guest User 50	USER	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
 \.
 
-
 --
 -- TOC entry 4704 (class 2606 OID 21224)
 -- Name: bookmarks bookmarks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.bookmarks
-    ADD CONSTRAINT bookmarks_pkey PRIMARY KEY (user_id, cafe_id);
-
+ADD CONSTRAINT bookmarks_pkey PRIMARY KEY (user_id, cafe_id);
 
 --
 -- TOC entry 4698 (class 2606 OID 21178)
@@ -633,8 +673,7 @@ ALTER TABLE ONLY public.bookmarks
 --
 
 ALTER TABLE ONLY public.cafe_images
-    ADD CONSTRAINT cafe_images_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT cafe_images_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4696 (class 2606 OID 21164)
@@ -642,8 +681,7 @@ ALTER TABLE ONLY public.cafe_images
 --
 
 ALTER TABLE ONLY public.cafes
-    ADD CONSTRAINT cafes_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT cafes_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4700 (class 2606 OID 21192)
@@ -651,8 +689,7 @@ ALTER TABLE ONLY public.cafes
 --
 
 ALTER TABLE ONLY public.coupons
-    ADD CONSTRAINT coupons_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT coupons_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4708 (class 2606 OID 21256)
@@ -660,8 +697,7 @@ ALTER TABLE ONLY public.coupons
 --
 
 ALTER TABLE ONLY public.otps
-    ADD CONSTRAINT otps_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT otps_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4702 (class 2606 OID 21208)
@@ -669,8 +705,7 @@ ALTER TABLE ONLY public.otps
 --
 
 ALTER TABLE ONLY public.reviews
-    ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4706 (class 2606 OID 21243)
@@ -678,8 +713,7 @@ ALTER TABLE ONLY public.reviews
 --
 
 ALTER TABLE ONLY public.search_histories
-    ADD CONSTRAINT search_histories_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT search_histories_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4692 (class 2606 OID 21152)
@@ -687,8 +721,7 @@ ALTER TABLE ONLY public.search_histories
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_email_key UNIQUE (email);
-
+ADD CONSTRAINT users_email_key UNIQUE (email);
 
 --
 -- TOC entry 4694 (class 2606 OID 21150)
@@ -696,8 +729,7 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
+ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 --
 -- TOC entry 4714 (class 2606 OID 21230)
@@ -705,8 +737,7 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.bookmarks
-    ADD CONSTRAINT bookmarks_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT bookmarks_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4715 (class 2606 OID 21225)
@@ -714,8 +745,7 @@ ALTER TABLE ONLY public.bookmarks
 --
 
 ALTER TABLE ONLY public.bookmarks
-    ADD CONSTRAINT bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4710 (class 2606 OID 21179)
@@ -723,8 +753,7 @@ ALTER TABLE ONLY public.bookmarks
 --
 
 ALTER TABLE ONLY public.cafe_images
-    ADD CONSTRAINT cafe_images_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT cafe_images_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4709 (class 2606 OID 21165)
@@ -732,8 +761,7 @@ ALTER TABLE ONLY public.cafe_images
 --
 
 ALTER TABLE ONLY public.cafes
-    ADD CONSTRAINT cafes_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT cafes_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.users (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4711 (class 2606 OID 21193)
@@ -741,8 +769,7 @@ ALTER TABLE ONLY public.cafes
 --
 
 ALTER TABLE ONLY public.coupons
-    ADD CONSTRAINT coupons_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT coupons_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4712 (class 2606 OID 21214)
@@ -750,8 +777,7 @@ ALTER TABLE ONLY public.coupons
 --
 
 ALTER TABLE ONLY public.reviews
-    ADD CONSTRAINT reviews_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT reviews_cafe_id_fkey FOREIGN KEY (cafe_id) REFERENCES public.cafes (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4713 (class 2606 OID 21209)
@@ -759,8 +785,7 @@ ALTER TABLE ONLY public.reviews
 --
 
 ALTER TABLE ONLY public.reviews
-    ADD CONSTRAINT reviews_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT reviews_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
 
 --
 -- TOC entry 4716 (class 2606 OID 21244)
@@ -768,12 +793,10 @@ ALTER TABLE ONLY public.reviews
 --
 
 ALTER TABLE ONLY public.search_histories
-    ADD CONSTRAINT search_histories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
+ADD CONSTRAINT search_histories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE;
 
 -- Completed on 2026-05-06 22:14:25
 
 --
 -- PostgreSQL database dump complete
 --
-

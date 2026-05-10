@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { searchCafes } from '../../services/cafeService';
 import './SearchBar.css';
 
 const SearchBar = ({ onSearchData }) => {
+    const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -11,7 +13,7 @@ const SearchBar = ({ onSearchData }) => {
     // State cho Autocomplete
     const [suggestions, setSuggestions] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    
+
     const searchBoxRef = useRef(null);
 
     // Khởi động lấy danh sách ngẫu nhiên hoặc trống
@@ -61,7 +63,7 @@ const SearchBar = ({ onSearchData }) => {
             setShowDropdown(true);
             try {
                 // Tạm thời ẩn API call, dùng tĩnh để test UI
-                setSuggestions([{id: 1, name: value + ' Coffee', address: 'Gợi ý...'}]);
+                setSuggestions([{ id: 1, name: value + ' Coffee', address: 'Gợi ý...' }]);
             } catch (error) {
                 console.error("Lỗi lấy gợi ý:", error);
             }
@@ -79,22 +81,22 @@ const SearchBar = ({ onSearchData }) => {
 
     return (
         <div className="sidebar-content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            
+
             {/* KHỐI 1: TÌM KIẾM VÀ TÙY CHỌN */}
             <div style={{ padding: '10px 15px', backgroundColor: 'white', zIndex: 10 }}>
                 <form onSubmit={onSubmit} className="search-box-modern" ref={searchBoxRef}>
                     <div className="input-wrapper" style={{ position: 'relative', width: '100%' }}>
                         <span className="search-icon">🔍</span>
-                        <input 
-                            type="text" 
-                            placeholder="エリアや条件で検索..." 
+                        <input
+                            type="text"
+                            placeholder="エリアや条件で検索..."
                             value={keyword}
                             onChange={handleInputChange}
-                            onFocus={() => { if(keyword.trim().length > 0) setShowDropdown(true) }}
+                            onFocus={() => { if (keyword.trim().length > 0) setShowDropdown(true) }}
                             className="search-input-modern"
                             style={{ width: '100%', padding: '10px 10px 10px 35px', borderRadius: '8px', border: '1px solid #ddd' }}
                         />
-                        
+
                         {/* Autocomplete Dropdown */}
                         {showDropdown && keyword.trim().length > 0 && (
                             <ul className="autocomplete-dropdown" style={autocompleteStyle}>
@@ -106,19 +108,19 @@ const SearchBar = ({ onSearchData }) => {
                             </ul>
                         )}
                     </div>
-                    
+
                     {/* Nút Lọc (Filter) */}
                     <button type="button" style={filterBtnStyle}>
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
-                             <line x1="4" y1="21" x2="4" y2="14"></line>
-                             <line x1="4" y1="10" x2="4" y2="3"></line>
-                             <line x1="12" y1="21" x2="12" y2="12"></line>
-                             <line x1="12" y1="8" x2="12" y2="3"></line>
-                             <line x1="20" y1="21" x2="20" y2="16"></line>
-                             <line x1="20" y1="12" x2="20" y2="3"></line>
-                             <line x1="1" y1="14" x2="7" y2="14"></line>
-                             <line x1="9" y1="8" x2="15" y2="8"></line>
-                             <line x1="17" y1="16" x2="23" y2="16"></line>
+                            <line x1="4" y1="21" x2="4" y2="14"></line>
+                            <line x1="4" y1="10" x2="4" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12" y2="3"></line>
+                            <line x1="20" y1="21" x2="20" y2="16"></line>
+                            <line x1="20" y1="12" x2="20" y2="3"></line>
+                            <line x1="1" y1="14" x2="7" y2="14"></line>
+                            <line x1="9" y1="8" x2="15" y2="8"></line>
+                            <line x1="17" y1="16" x2="23" y2="16"></line>
                         </svg>
                     </button>
                 </form>
@@ -133,16 +135,28 @@ const SearchBar = ({ onSearchData }) => {
 
             {/* KHỐI 2: DANH SÁCH QUÁN CAFE THEO THIẾT KẾ (Cuộn dọc) */}
             <div className="results-scroll-area" style={scrollAreaStyle}>
-                {loading && <p style={{textAlign: 'center', color: '#666'}}>読み込み中...</p>}
-                
+                {loading && <p style={{ textAlign: 'center', color: '#666' }}>読み込み中...</p>}
+
                 {results.map((cafe) => (
-                    <div key={cafe.id} className="cafe-card" style={cardStyle}>
+                    <div
+                        key={cafe.id}
+                        className="cafe-card"
+                        style={{ ...cardStyle, cursor: 'pointer' }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate(`/cafes/${cafe.id}`)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                navigate(`/cafes/${cafe.id}`);
+                            }
+                        }}
+                    >
                         {/* Khối Ảnh (Mục 9) và Nút thả tim (Mục 10) */}
                         <div style={{ position: 'relative' }}>
-                            <img 
-                                src={cafe.images && cafe.images.length > 0 ? cafe.images[0].imageUrl : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'} 
-                                alt={cafe.name} 
-                                style={imageStyle} 
+                            <img
+                                src={cafe.images && cafe.images.length > 0 ? cafe.images[0].imageUrl : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'}
+                                alt={cafe.name}
+                                style={imageStyle}
                                 onError={(e) => {
                                     e.target.onerror = null; // Ngăn chặn vòng lặp vô tận
                                     e.target.src = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'; // Thay bằng ảnh mặc định siêu đẹp

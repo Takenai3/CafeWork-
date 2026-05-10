@@ -37,10 +37,6 @@ public class CafeController {
         return cafeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Cafe getCafeById(@PathVariable String id) {
-        return cafeRepository.findById(id).orElse(null);
-    }
 
     @PostMapping
     public Cafe createCafe(@RequestBody Cafe cafe) {
@@ -62,16 +58,34 @@ public class CafeController {
 
     // API Tìm kiếm quán cafe theo từ khóa
     @GetMapping("/search")
-    public ResponseEntity<List<Cafe>> searchCafes(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
+    public ResponseEntity<List<Cafe>> searchCafes(
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
         System.out.println("=========================================");
         System.out.println("--> API /search vừa được gọi từ Frontend!");
         System.out.println("--> Từ khóa nhận được: [" + keyword + "]");
-        
+
         List<Cafe> results = cafeService.searchByName(keyword);
-        
+
         System.out.println("--> Đã tìm thấy " + results.size() + " quán cafe trong Database.");
         System.out.println("=========================================");
-        
+
         return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Cafe> getCafeById(@PathVariable String id) {
+        System.out.println("--> API GET /api/cafes/" + id + " vừa được gọi từ Frontend!");
+
+        Cafe cafe = cafeService.getCafeDetailsById(id);
+
+        if (cafe != null) {
+            // Nếu tìm thấy: Trả về HTTP Status 200 OK kèm thông tin chi tiết (bao gồm cả
+            // danh sách ảnh)
+            return ResponseEntity.ok(cafe);
+        } else {
+            // Nếu không tìm thấy: Trả về HTTP Status 404 Not Found
+            System.out.println("--> Không tìm thấy quán cafe với ID: " + id);
+            return ResponseEntity.notFound().build();
+        }
     }
 }
