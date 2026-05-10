@@ -8,10 +8,7 @@ Kiểm tra bằng cách mở Terminal và gõ:
 node -v
 npm -v
 Bước 2: Khởi tạo dự án bằng Vite
-Mở Terminal tại thư mục bạn muốn chứa dự án và chạy lệnh:
-
-npm create vite@latest my-map-project -- --template react
-cd my-map-project
+npm install vite
 Bước 3: Cài đặt thư viện
 Chúng ta chỉ cài đặt thư viện bản đồ cốt lõi leaflet:
 
