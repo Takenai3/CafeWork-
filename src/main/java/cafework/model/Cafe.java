@@ -1,20 +1,30 @@
 package cafework.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cafes")
 public class Cafe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     private String name;
     private String address;
     private String description;
-    private Integer availableSeats;
+    
+    // Ánh xạ đích danh vào cột seat_status dưới Database PostgreSQL
+    @Column(name = "seat_status")
+    private String seatStatus; 
+
     private String openHours;
-    private Integer ownerId;
+    private String ownerId;
+    
     // Bổ sung để phục vụ lọc nâng cao
     private Double rating;     // Điểm đánh giá
     private Double latitude;   // Vĩ độ của quán
@@ -22,11 +32,13 @@ public class Cafe {
 
     public Cafe() {}
 
-    public Integer getId() {
+    // --- GETTERS & SETTERS ---
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -54,12 +66,12 @@ public class Cafe {
         this.description = description;
     }
 
-    public Integer getAvailableSeats() {
-        return availableSeats;
+    public String getSeatStatus() {
+        return seatStatus;
     }
 
-    public void setAvailableSeats(Integer availableSeats) {
-        this.availableSeats = availableSeats;
+    public void setSeatStatus(String seatStatus) {
+        this.seatStatus = seatStatus;
     }
 
     public String getOpenHours() {
@@ -70,11 +82,35 @@ public class Cafe {
         this.openHours = openHours;
     }
 
-    public Integer getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Integer ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

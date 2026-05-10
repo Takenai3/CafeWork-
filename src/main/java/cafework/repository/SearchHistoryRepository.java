@@ -1,9 +1,10 @@
 package cafework.repository;
 
-import cafework.model.SearchHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import cafework.model.SearchHistory;
+
 @Repository
-public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Integer> {
+public interface SearchHistoryRepository extends JpaRepository<SearchHistory, String> {
 }
