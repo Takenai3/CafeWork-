@@ -130,13 +130,13 @@ const MapArea = ({ cafes }) => {
               mapInstanceRef.current.setView(userCoordsRef.current, 16); 
               L.marker(userCoordsRef.current)
                 .addTo(mapInstanceRef.current)
-                .bindPopup('<b>Bệ hạ đang ngự tại đây!</b>')
+                .bindPopup('<b>あなたはここにいる!</b>')
                 .openPopup();
               L.circle(userCoordsRef.current, { radius: 100, color: 'blue', fillOpacity: 0.1 })
                 .addTo(mapInstanceRef.current);
             }
           },
-          (error) => console.error("Lỗi khi lấy vị trí:", error),
+          (error) => console.error("位置情報の取得中にエラーが発生しました。", error),
           { enableHighAccuracy: true }
         );
       }
