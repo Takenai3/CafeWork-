@@ -27,9 +27,6 @@ public class Cafe {
     @Column(name = "seat_status")
     private String seatStatus;
 
-    private String openHours;
-    private String ownerId;
-
     @Column(name = "open_hours")
     private String openHours;
 

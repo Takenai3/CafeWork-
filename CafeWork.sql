@@ -1,4 +1,19 @@
 --
+-- TOC entry 4868 (class 0 OID 21160)
+-- Dependencies: 218
+-- Data for Name: cafes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+COPY public.cafes (id, owner_id, name, description, address, latitude, longitude, open_hours, phone, seat_status, crowd_status, created_at, updated_at) FROM stdin;
+30000000-0000-0000-0000-000000000001	20000000-0000-0000-0000-000000000001	Cà Phê Hoàn Kiếm	Không gian yên tĩnh, wifi mạnh, phù hợp làm việc và họp	Đường Dinh Tiên Hoàng, Hoàn Kiếm, Hà Nội	21.02851	105.80482	08:00 - 22:00	024-3936-6066	AVAILABLE	Còn chỗ ngồi	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
+30000000-0000-0000-0000-000000000002	20000000-0000-0000-0000-000000000002	Cà Phê The Wake Up	Quán cafe hiện đại, không khí mát mẻ, có khu vực yên tĩnh	Phố Tạ Hiện, Hoàn Kiếm, Hà Nội	21.02961	105.80756	07:30 - 23:00	024-3938-1212	ALMOST_FULL	Sắp đầy	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
+30000000-0000-0000-0000-000000000003	20000000-0000-0000-0000-000000000003	Cà Phê Bích Hạ	Phong cách vintage, quán yên tĩnh, thích hợp cho sinh viên và freelancer	Phố Mã Mây, Hoàn Kiếm, Hà Nội	21.03157	105.80398	09:00 - 22:30	024-3928-8282	AVAILABLE	Còn chỗ ngồi	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
+30000000-0000-0000-0000-000000000004	20000000-0000-0000-0000-000000000004	Cà Phê Indochine	Quán cafe lãng mạn, trang trí cổ điển, phục vụ đồ uống chất lượng cao	Đường Ngô Thì Nhậm, Hoan Kiem, Hà Nội	21.02671	105.81182	08:00 - 23:00	024-3945-2020	FULL	Đầy chỗ	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
+30000000-0000-0000-0000-000000000005	20000000-0000-0000-0000-000000000005	Cà Phê Hà Nội Xưa	Mang đậm nét văn hóa Hà Nội cũ, không gian ấm cúng, phù hợp nghỉ chân	Phố Hàng Mành, Hoàn Kiếm, Hà Nội	21.03371	105.80612	07:00 - 22:00	024-3941-5555	AVAILABLE	Còn chỗ ngồi	2026-05-06 22:07:05.238232+07	2026-05-06 22:07:05.238232+07
+\.
+
+--
 -- PostgreSQL database dump
 --
 
@@ -800,3 +815,4 @@ ADD CONSTRAINT search_histories_user_id_fkey FOREIGN KEY (user_id) REFERENCES pu
 --
 -- PostgreSQL database dump complete
 --
+SELECT id, name, address FROM cafes;
