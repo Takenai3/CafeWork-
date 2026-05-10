@@ -58,34 +58,7 @@ const HomePage = () => {
              <SearchBar />
           </div>
 
-          {/* Panel Tuyến đường */}
-          <div style={{ margin: '15px', padding: '15px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-            <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>🧭 ルート案内 (6)</h4>
-            <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>目的地: カフェ・ジアン</div>
-            
-            {/* Input điểm xuất phát (Số 7) */}
-            <div style={{ display: 'flex', gap: '5px', marginBottom: '15px' }}>
-              <input 
-                type="text" defaultValue="ハノイ工科大学" 
-                style={{ flex: 1, padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-              />
-              <button style={{ padding: '8px 15px', backgroundColor: '#5c4033', color: '#fff', border: 'none', borderRadius: '4px' }}>
-                検索
-              </button>
-            </div>
-
-            {/* Tóm tắt khoảng cách (Số 8) */}
-            <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
-              <div>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>4.3 km</div>
-                <div style={{ fontSize: '12px', color: '#777' }}>距離</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>8 分</div>
-                <div style={{ fontSize: '12px', color: '#777' }}>所要時間</div>
-              </div>
-            </div>
-          </div>
+          
 
         </div>
 
