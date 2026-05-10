@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { searchCafes } from '../../services/cafeService';
 import './SearchBar.css';
 
-const SearchBar = () => {
+const SearchBar = ({ onSearchData }) => {
     const [keyword, setKeyword] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -39,6 +39,7 @@ const SearchBar = () => {
             // (Nếu từ khóa rỗng, API sẽ trả về toàn bộ quán, hoặc ngài có thể chặn lại tùy ý)
             const data = await searchCafes(searchKeyword);
             setResults(data);
+            onSearchData(data); // Đẩy dữ liệu lên HomePage để cắm cờ
         } catch (err) {
             console.error("Lỗi:", err);
             setError('エラーが発生しました。');
