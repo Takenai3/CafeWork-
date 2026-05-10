@@ -41,7 +41,7 @@ const MapArea = () => {
             // Cắm một chiếc ghim đặc biệt để đánh dấu vị trí của bệ hạ
             L.marker(userLocation)
               .addTo(map)
-              .bindPopup('<b>Bệ hạ đang ngự tại đây!</b>')
+              .bindPopup('<b>あなたはここにいる</b>')
               .openPopup();
             
             // Vẽ một vòng tròn nhỏ xung quanh để chỉ độ chính xác
@@ -49,7 +49,7 @@ const MapArea = () => {
           },
           (error) => {
             console.error("Lỗi khi lấy vị trí:", error);
-            alert("Bẩm bệ hạ, thần không thể tìm thấy vị trí của ngài. Xin hãy kiểm tra quyền truy cập vị trí trên trình duyệt.");
+            alert("あなたの現在地を特定できません。ブラウザの位置情報へのアクセス権限をご確認ください。");
           },
           { enableHighAccuracy: true } // Yêu cầu độ chính xác cao nhất
         );
