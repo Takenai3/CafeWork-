@@ -13,3 +13,5 @@ Bước 3: Cài đặt thư viện
 Chúng ta chỉ cài đặt thư viện bản đồ cốt lõi leaflet:
 
 npm install leaflet
+Bước 4: cài đặt cơ chế chỉ đường của leaflet
+npm install leaflet-routing-machine

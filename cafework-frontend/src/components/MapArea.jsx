@@ -16,7 +16,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 
 
-const MapArea = ({ cafes }) => {
+const MapArea = ({ cafes, onRouteCalculated, isRouting }) => {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
@@ -30,7 +30,12 @@ const MapArea = ({ cafes }) => {
   // ----------------------------------------------------
   // Dùng để lưu đường kẻ xanh, dễ dàng xóa đi vẽ lại
   const polylineRef = useRef(null);
-
+  useEffect(() => {
+    if (!isRouting && polylineRef.current && mapInstanceRef.current) {
+        mapInstanceRef.current.removeLayer(polylineRef.current);
+        polylineRef.current = null;
+    }
+  }, [isRouting]);
   const drawRoute = async (destLat, destLng) => {
     if (!userCoordsRef.current) {
       alert("Bệ hạ vui lòng cho phép định vị trước!");
@@ -42,70 +47,32 @@ const MapArea = ({ cafes }) => {
       mapInstanceRef.current.removeLayer(polylineRef.current);
     }
     // Xóa cái bảng trắng cũ (nếu nó còn sót lại)
-    const oldContainer = document.querySelector('.leaflet-routing-container');
-    if (oldContainer) oldContainer.remove();
-
     try {
-      // 2. Tự gọi máy chủ OSRM để lấy tọa độ đường đi (profile car)
-      const url = `https://router.project-osrm.org/route/v1/car/${userCoordsRef.current[1]},${userCoordsRef.current[0]};${destLng},${destLat}?overview=full&geometries=geojson`;
+      // ĐÃ THÊM MẬT LỆNH &steps=true VÀO CUỐI URL ĐỂ MÁY CHỦ KHAI RA TỪNG BƯỚC ĐI
+      const url = `https://router.project-osrm.org/route/v1/car/${userCoordsRef.current[1]},${userCoordsRef.current[0]};${destLng},${destLat}?overview=full&geometries=geojson&steps=true`;
       
       const response = await fetch(url);
       const data = await response.json();
+      if (data.code !== 'Ok') return;
 
-      if (data.code !== 'Ok') {
-        alert("Máy chủ không tìm thấy đường đi!");
-        return;
-      }
-
-      // 3. Lấy danh sách tọa độ và vẽ Sợi chỉ xanh
+      // Vẽ sợi chỉ xanh
       const coordinates = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
-      
-      polylineRef.current = L.polyline(coordinates, {
-        color: '#0066ff',
-        weight: 6,
-        opacity: 0.8,
-        lineJoin: 'round'
-      }).addTo(mapInstanceRef.current);
-
-      // 4. Bay đến để nhìn thấy toàn bộ quãng đường
+      polylineRef.current = L.polyline(coordinates, { color: '#0066ff', weight: 6, opacity: 0.8, lineJoin: 'round' }).addTo(mapInstanceRef.current);
       mapInstanceRef.current.fitBounds(polylineRef.current.getBounds(), { padding: [50, 50] });
 
-      // 5. Hiển thị bảng thông tin đơn giản (Nền trắng giống ảnh 1)
+      // Lấy khoảng cách, thời gian và CHI TIẾT TỪNG BƯỚC ĐI
       const distance = (data.routes[0].distance / 1000).toFixed(1);
       const duration = Math.round(data.routes[0].duration / 60);
-      
-      showSimpleRoutingPanel(distance, duration);
+      const steps = data.routes[0].legs[0].steps;
 
-    } catch (error) {
-      console.error("Lỗi vẽ đường:", error);
-    }
+      // PHÓNG MŨI TÊN CHUYỂN DỮ LIỆU VỀ CHO HOMEPAGE (ĐỂ NÓ HIỆN LÊN CỘT TRÁI)
+      if (onRouteCalculated) {
+          onRouteCalculated({ distance, duration, steps });
+      }
+
+    } catch (error) { console.error("Lỗi vẽ đường:", error); }
   };
-
-  // Hàm tạo bảng thông tin (Giống ảnh 1 ngài muốn)
-  const showSimpleRoutingPanel = (dist, time) => {
-    const existing = document.getElementById('custom-routing-panel');
-    if (existing) existing.remove();
-
-    const panel = document.createElement('div');
-    panel.id = 'custom-routing-panel';
-    panel.innerHTML = `
-      <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">ルート案内</div>
-      <div style="font-size: 18px; color: #333;">${dist} km、${time} 分</div>
-      <div style="margin-top: 10px; font-size: 12px; color: #888;">※ 交通状況により変動します</div>
-      <button id="close-route" style="margin-top: 10px; width: 100%; padding: 5px; cursor: pointer;">閉じる</button>
-    `;
-    Object.assign(panel.style, {
-      position: 'absolute', top: '20px', right: '20px', zIndex: 1000,
-      backgroundColor: 'white', padding: '15px', borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.2)', width: '250px'
-    });
-    document.body.appendChild(panel);
-    document.getElementById('close-route').onclick = () => {
-        panel.remove();
-        if (polylineRef.current) mapInstanceRef.current.removeLayer(polylineRef.current);
-    };
-  };
-
+    
   // ----------------------------------------------------
   // PHÉP THUẬT 1: KHỞI TẠO BẢN ĐỒ VÀ ĐỊNH VỊ BỆ HẠ
   // ----------------------------------------------------
