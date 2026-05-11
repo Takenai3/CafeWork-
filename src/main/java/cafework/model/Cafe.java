@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Formula; // Bổ sung thư viện này
+
 @Entity
 @Table(name = "cafes")
 public class Cafe {
@@ -22,17 +24,18 @@ public class Cafe {
     private String address;
     private String description;
     
-    // Ánh xạ đích danh vào cột seat_status dưới Database PostgreSQL
     @Column(name = "seat_status")
     private String seatStatus; 
 
     private String openHours;
     private String ownerId;
     
-    // Bổ sung để phục vụ lọc nâng cao
-    private Double rating;     // Điểm đánh giá
-    private Double latitude;   // Vĩ độ của quán
-    private Double longitude;  // Kinh độ của quán
+    // Yêu cầu Database tự đếm trung bình cộng (AVG) của cột rating trong bảng reviews
+    @Formula("(SELECT COALESCE(AVG(r.rating), 0.0) FROM reviews r WHERE r.cafe_id = id)")
+    private Double rating;     
+
+    private Double latitude;   
+    private Double longitude;  
 
     public Cafe() {}
 
