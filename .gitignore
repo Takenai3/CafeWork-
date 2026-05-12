@@ -10,6 +10,12 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# ==================== MAVEN WRAPPER SCRIPTS ====================
+mvnw
+mvnw.cmd
+mvnwDebug
+mvnwDebug.cmd
+
 # ==================== SPRING BOOT ====================
 .springBeans
 spring-shell.log
@@ -59,12 +65,24 @@ lerna-debug.log*
 
 # ==================== TÀI NGUYÊN / UPLOAD ====================
 # Thư mục chứa ảnh, video, file upload của người dùng
+src/main/resources/static/uploads/
+src/main/resources/static/images/uploads/
+uploads/
+upload/
 
 # ==================== CẤU HÌNH BÍ MẬT ====================
-
+# Biến môi trường
+.env
+.env.*
 !.env.example
 
 # Cấu hình application bí mật (chứa password, secret key)
+src/main/resources/application-prod.properties
+src/main/resources/application-prod.yml
+src/main/resources/application-secret.properties
+src/main/resources/application-secret.yml
+src/main/resources/application-local.properties
+src/main/resources/application-local.yml
 
 
 # Certificate / Key
