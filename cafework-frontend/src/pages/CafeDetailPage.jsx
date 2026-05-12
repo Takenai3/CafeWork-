@@ -2,25 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-// Import thư viện bản đồ React-Leaflet
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-// Import CSS (Đã giữ đúng đường dẫn của bạn)
+// Import CSS
 import '../CafeDetailPage.css';
-
-// Khắc phục lỗi không hiển thị icon Marker mặc định của Leaflet trong React/Vite
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
 
 const CafeDetailPage = () => {
   // Lấy ID quán từ URL (ví dụ: /cafes/1)
@@ -54,16 +37,21 @@ const CafeDetailPage = () => {
     fetchCafeDetails();
   }, [id]);
 
-  // LOGIC FE: Xác định màu sắc trạng thái chỗ ngồi
-  const getSeatStatusColor = (statusText) => {
-    if (!statusText) return 'unknown';
-
-    const text = statusText.toLowerCase();
-    if (text.includes('còn') || text.includes('nhiều') || text.includes('trống')) return 'available'; // Xanh
-    if (text.includes('sắp') || text.includes('ít')) return 'warning'; // Vàng
-    if (text.includes('hết') || text.includes('đầy') || text.includes('kín')) return 'full'; // Đỏ
-
+  // LOGIC FE: Xác định màu sắc trạng thái chỗ ngồi (khớp với enum từ API)
+  const getSeatStatusColor = (status) => {
+    if (!status) return 'unknown';
+    if (status === 'AVAILABLE') return 'available';    // Xanh lá
+    if (status === 'ALMOST_FULL') return 'warning';    // Vàng
+    if (status === 'FULL') return 'full';              // Đỏ
     return 'unknown';
+  };
+
+  // Nhãn hiển thị thân thiện bằng tiếng Việt
+  const getSeatStatusLabel = (status) => {
+    if (status === 'AVAILABLE') return '🟢 Còn nhiều chỗ';
+    if (status === 'ALMOST_FULL') return '🟡 Sắp đầy chỗ';
+    if (status === 'FULL') return '🔴 Hết chỗ ngồi';
+    return '⚪ Đang cập nhật';
   };
 
   // Hiển thị trạng thái đang tải hoặc lỗi
@@ -105,7 +93,7 @@ const CafeDetailPage = () => {
           {/* KHU VỰC HIỂN THỊ TRẠNG THÁI CHỖ NGỒI MỚI */}
           <div className="seat-status-container">
             <div className={`seat-status-tag ${getSeatStatusColor(cafe.seatStatus)}`}>
-              Tình trạng bàn: {cafe.seatStatus || 'Đang cập nhật'}
+              {getSeatStatusLabel(cafe.seatStatus)}
             </div>
 
             <button
@@ -136,23 +124,15 @@ const CafeDetailPage = () => {
         <div className="map-sidebar">
           <h3>🗺️ Vị trí trên bản đồ</h3>
           <div className="map-wrapper" style={{ height: '400px', width: '100%' }}>
-            <MapContainer
-              center={mapCenter}
-              zoom={15}
-              scrollWheelZoom={false}
-              style={{ height: '100%', width: '100%', borderRadius: '8px', zIndex: 1 }}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <Marker position={mapCenter}>
-                <Popup>
-                  <strong>{cafe.name}</strong> <br />
-                  {cafe.address}
-                </Popup>
-              </Marker>
-            </MapContainer>
+            <iframe
+              title="map"
+              width="100%"
+              height="100%"
+              style={{ border: 0, borderRadius: '8px' }}
+              loading="lazy"
+              allowFullScreen
+              src={`https://maps.google.com/maps?q=${cafe.latitude || 21.028511},${cafe.longitude || 105.804817}&z=16&output=embed`}
+            />
           </div>
         </div>
       </div>
