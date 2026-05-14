@@ -13,16 +13,12 @@ const SearchBar = ({ onSearchData }) => {
 
     const [suggestions, setSuggestions] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-<<<<<<< HEAD
     
     // --- STATE MỚI CHO SẮP XẾP VÀ GPS ---
     const [showSortMenu, setShowSortMenu] = useState(false);
     const [sortBy, setSortBy] = useState('default'); 
     const [userLocation, setUserLocation] = useState({ lat: 21.0071, lng: 105.8431 }); // Mặc định là Bách Khoa
     
-=======
-
->>>>>>> origin/Tú
     const searchBoxRef = useRef(null);
     const sortMenuRef = useRef(null);
     const typingTimeoutRef = useRef(null); // Debounce cho Autocomplete
@@ -74,7 +70,6 @@ const SearchBar = ({ onSearchData }) => {
         if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
         if (value.trim().length > 0) {
-<<<<<<< HEAD
             typingTimeoutRef.current = setTimeout(async () => {
                 try {
                     const data = await searchCafes(value);
@@ -84,15 +79,6 @@ const SearchBar = ({ onSearchData }) => {
                     console.error("Lỗi lấy gợi ý:", error);
                 }
             }, 300);
-=======
-            setShowDropdown(true);
-            try {
-                // Tạm thời ẩn API call, dùng tĩnh để test UI
-                setSuggestions([{ id: 1, name: value + ' Coffee', address: 'Gợi ý...' }]);
-            } catch (error) {
-                console.error("Lỗi lấy gợi ý:", error);
-            }
->>>>>>> origin/Tú
         } else {
             setShowDropdown(false);
             setSuggestions([]);
@@ -119,12 +105,7 @@ const SearchBar = ({ onSearchData }) => {
 
     return (
         <div className="sidebar-content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-<<<<<<< HEAD
             
-=======
-
-            {/* KHỐI 1: TÌM KIẾM VÀ TÙY CHỌN */}
->>>>>>> origin/Tú
             <div style={{ padding: '10px 15px', backgroundColor: 'white', zIndex: 10 }}>
                 <form onSubmit={onSubmit} className="search-box-modern" ref={searchBoxRef}>
                     <div className="input-wrapper" style={{ position: 'relative', width: '100%' }}>
@@ -138,12 +119,7 @@ const SearchBar = ({ onSearchData }) => {
                             className="search-input-modern"
                             style={{ width: '100%', padding: '10px 10px 10px 35px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
                         />
-<<<<<<< HEAD
                         
-=======
-
-                        {/* Autocomplete Dropdown */}
->>>>>>> origin/Tú
                         {showDropdown && keyword.trim().length > 0 && (
                             <ul className="autocomplete-dropdown" style={autocompleteStyle}>
                                 {suggestions.map((cafe) => (
@@ -157,7 +133,6 @@ const SearchBar = ({ onSearchData }) => {
                             </ul>
                         )}
                     </div>
-<<<<<<< HEAD
                     
                     {/* BỘ LỌC CÓ MENU DROPDOWN TÍCH HỢP */}
                     <div style={{ position: 'relative' }} ref={sortMenuRef}>
@@ -189,23 +164,6 @@ const SearchBar = ({ onSearchData }) => {
                             </div>
                         )}
                     </div>
-=======
-
-                    {/* Nút Lọc (Filter) */}
-                    <button type="button" style={filterBtnStyle}>
-                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
-                            <line x1="4" y1="21" x2="4" y2="14"></line>
-                            <line x1="4" y1="10" x2="4" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12" y2="3"></line>
-                            <line x1="20" y1="21" x2="20" y2="16"></line>
-                            <line x1="20" y1="12" x2="20" y2="3"></line>
-                            <line x1="1" y1="14" x2="7" y2="14"></line>
-                            <line x1="9" y1="8" x2="15" y2="8"></line>
-                            <line x1="17" y1="16" x2="23" y2="16"></line>
-                        </svg>
-                    </button>
->>>>>>> origin/Tú
                 </form>
 
                 <div style={{ display: 'flex', gap: '8px', marginTop: '10px', overflowX: 'auto' }}>
@@ -216,17 +174,10 @@ const SearchBar = ({ onSearchData }) => {
             </div>
 
             <div className="results-scroll-area" style={scrollAreaStyle}>
-<<<<<<< HEAD
                 {loading && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>読み込み中...</p>}
                 {!loading && sortedResults.length === 0 && keyword && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>カフェが見つかりません</p>}
                 
-                {/* RENDER DANH SÁCH ĐÃ ĐƯỢC SẮP XẾP */}
                 {sortedResults.map((cafe) => (
-                    <div key={cafe.id} className="cafe-card" style={cardStyle}>
-=======
-                {loading && <p style={{ textAlign: 'center', color: '#666' }}>読み込み中...</p>}
-
-                {results.map((cafe) => (
                     <div
                         key={cafe.id}
                         className="cafe-card"
@@ -241,7 +192,6 @@ const SearchBar = ({ onSearchData }) => {
                         }}
                     >
                         {/* Khối Ảnh (Mục 9) và Nút thả tim (Mục 10) */}
->>>>>>> origin/Tú
                         <div style={{ position: 'relative' }}>
                             <img
                                 src={cafe.images && cafe.images.length > 0 ? cafe.images[0].imageUrl : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'}

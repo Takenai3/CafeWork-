@@ -2,6 +2,8 @@ package cafework.model;
 
 import java.util.List;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,11 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-<<<<<<< HEAD
-import org.hibernate.annotations.Formula; // Bổ sung thư viện này
-=======
->>>>>>> origin/Tú
+import jakarta.persistence.Table; // Bổ sung thư viện này
 
 @Entity
 @Table(name = "cafes")
@@ -26,19 +24,12 @@ public class Cafe {
     private String name;
     private String address;
     private String description;
-<<<<<<< HEAD
     
-=======
-
-    // Ánh xạ đích danh vào cột seat_status dưới Database PostgreSQL
->>>>>>> origin/Tú
     @Column(name = "seat_status")
     private String seatStatus;
 
     @Column(name = "open_hours")
     private String openHours;
-<<<<<<< HEAD
-    private String ownerId;
     
     // Yêu cầu Database tự đếm trung bình cộng (AVG) của cột rating trong bảng reviews
     @Formula("(SELECT COALESCE(AVG(r.rating), 0.0) FROM reviews r WHERE r.cafe_id = id)")
@@ -46,16 +37,9 @@ public class Cafe {
 
     private Double latitude;   
     private Double longitude;  
-=======
->>>>>>> origin/Tú
 
     @Column(name = "owner_id")
     private String ownerId;
-
-    // Bổ sung để phục vụ lọc nâng cao
-    private Double rating; // Điểm đánh giá
-    private Double latitude; // Vĩ độ của quán
-    private Double longitude; // Kinh độ của quán
 
     public Cafe() {
     }
