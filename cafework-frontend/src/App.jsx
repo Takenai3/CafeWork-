@@ -1,19 +1,21 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
-import CafeDetailPage from './pages/CafeDetailPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/cafes/:id" element={<CafeDetailPage />} />
-        </Routes>
-      </div>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        {/* You can add more routes here, like /verify-otp or /owner/dashboard */}
+      </Routes>
     </Router>
   );
 }
+
 export default App;
