@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { searchCafes } from '../../services/cafeService';
 import L from 'leaflet'; // Bổ sung Leaflet để tính khoảng cách
 import './SearchBar.css';
 
 const SearchBar = ({ onSearchData }) => {
+    const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -108,12 +110,12 @@ const SearchBar = ({ onSearchData }) => {
                 <form onSubmit={onSubmit} className="search-box-modern" ref={searchBoxRef}>
                     <div className="input-wrapper" style={{ position: 'relative', width: '100%' }}>
                         <span className="search-icon">🔍</span>
-                        <input 
-                            type="text" 
-                            placeholder="エリアや条件で検索..." 
+                        <input
+                            type="text"
+                            placeholder="エリアや条件で検索..."
                             value={keyword}
                             onChange={handleInputChange}
-                            onFocus={() => { if(keyword.trim().length > 0) setShowDropdown(true) }}
+                            onFocus={() => { if (keyword.trim().length > 0) setShowDropdown(true) }}
                             className="search-input-modern"
                             style={{ width: '100%', padding: '10px 10px 10px 35px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
                         />
@@ -175,14 +177,26 @@ const SearchBar = ({ onSearchData }) => {
                 {loading && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>読み込み中...</p>}
                 {!loading && sortedResults.length === 0 && keyword && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>カフェが見つかりません</p>}
                 
-                {/* RENDER DANH SÁCH ĐÃ ĐƯỢC SẮP XẾP */}
                 {sortedResults.map((cafe) => (
-                    <div key={cafe.id} className="cafe-card" style={cardStyle}>
+                    <div
+                        key={cafe.id}
+                        className="cafe-card"
+                        style={{ ...cardStyle, cursor: 'pointer' }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate(`/cafes/${cafe.id}`)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                navigate(`/cafes/${cafe.id}`);
+                            }
+                        }}
+                    >
+                        {/* Khối Ảnh (Mục 9) và Nút thả tim (Mục 10) */}
                         <div style={{ position: 'relative' }}>
-                            <img 
-                                src={cafe.images && cafe.images.length > 0 ? cafe.images[0].imageUrl : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'} 
-                                alt={cafe.name} 
-                                style={imageStyle} 
+                            <img
+                                src={cafe.images && cafe.images.length > 0 ? cafe.images[0].imageUrl : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'}
+                                alt={cafe.name}
+                                style={imageStyle}
                                 onError={(e) => {
                                     e.target.onerror = null; 
                                     e.target.src = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'; 
