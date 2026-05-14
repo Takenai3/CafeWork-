@@ -1,4 +1,4 @@
-# Maven
+# ==================== MAVEN / BUILD ====================
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -10,21 +10,121 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# ==================== MAVEN WRAPPER SCRIPTS ====================
+mvnw
+mvnw.cmd
+mvnwDebug
+mvnwDebug.cmd
+
+# ==================== SPRING BOOT ====================
+.springBeans
+spring-shell.log
+
+# ==================== IDE ====================
 # IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-# Spring Boot
-.springBeans
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
 
-# Logs
-*.log
+# Eclipse
+.classpath
+.project
+.settings/
+*.launch
+.factorypath
 
-# OS
-.DS_Store
-Thumbs.db
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
 
-#env
+# ==================== NODE / FRONTEND ====================
+node_modules/
+cafework-frontend/node_modules/
+cafework-frontend/dist/
+cafework-frontend/dist-ssr/
+cafework-frontend/.cache/
+cafework-frontend/build/
+*.local
+
+# npm / yarn / pnpm debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==================== TÀI NGUYÊN / UPLOAD ====================
+# Thư mục chứa ảnh, video, file upload của người dùng
+src/main/resources/static/uploads/
+src/main/resources/static/images/uploads/
+uploads/
+upload/
+
+# ==================== CẤU HÌNH BÍ MẬT ====================
+# Biến môi trường
 .env
+.env.*
+!.env.example
+
+# Cấu hình application bí mật (chứa password, secret key)
+src/main/resources/application-prod.properties
+src/main/resources/application-prod.yml
+src/main/resources/application-secret.properties
+src/main/resources/application-secret.yml
+src/main/resources/application-local.properties
+src/main/resources/application-local.yml
+
+
+# Certificate / Key
+*.p12
+*.jks
+*.pem
+*.key
+*.cert
+*.crt
+
+# ==================== DATABASE ====================
+*.db
+*.sqlite
+*.h2.mv.db
+*.h2.trace.db
+data/
+
+# ==================== LOG ====================
+*.log
+logs/
+log/
+
+# ==================== MAVEN WRAPPER (không cần commit JAR) ====================
+apache-maven-*/
+!apache-maven-*/.mvn/
+
+# ==================== OS ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==================== TẠM / CACHE ====================
+*.tmp
+*.temp
+*.swp
+*.bak
+*.orig
+.cache/
+tmp/
+temp/

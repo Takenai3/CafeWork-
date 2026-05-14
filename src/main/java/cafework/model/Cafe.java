@@ -11,23 +11,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+<<<<<<< HEAD
 import org.hibernate.annotations.Formula; // Bổ sung thư viện này
+=======
+>>>>>>> origin/Tú
 
 @Entity
 @Table(name = "cafes")
 public class Cafe {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
     private String address;
     private String description;
+<<<<<<< HEAD
     
-    @Column(name = "seat_status")
-    private String seatStatus; 
+=======
 
+    // Ánh xạ đích danh vào cột seat_status dưới Database PostgreSQL
+>>>>>>> origin/Tú
+    @Column(name = "seat_status")
+    private String seatStatus;
+
+    @Column(name = "open_hours")
     private String openHours;
+<<<<<<< HEAD
     private String ownerId;
     
     // Yêu cầu Database tự đếm trung bình cộng (AVG) của cột rating trong bảng reviews
@@ -36,8 +46,19 @@ public class Cafe {
 
     private Double latitude;   
     private Double longitude;  
+=======
+>>>>>>> origin/Tú
 
-    public Cafe() {}
+    @Column(name = "owner_id")
+    private String ownerId;
+
+    // Bổ sung để phục vụ lọc nâng cao
+    private Double rating; // Điểm đánh giá
+    private Double latitude; // Vĩ độ của quán
+    private Double longitude; // Kinh độ của quán
+
+    public Cafe() {
+    }
 
     // --- GETTERS & SETTERS ---
 
@@ -120,7 +141,7 @@ public class Cafe {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
-    
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "cafe_id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<CafeImage> images;

@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 @Table(name = "reviews")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String userId;
@@ -19,7 +19,8 @@ public class Review {
     private String rating;
     private String language;
 
-    public Review() {}
+    public Review() {
+    }
 
     public String getId() {
         return id;
