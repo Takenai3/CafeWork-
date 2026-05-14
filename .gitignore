@@ -128,3 +128,4 @@ desktop.ini
 .cache/
 tmp/
 temp/
+src/main/resources/application.properties
