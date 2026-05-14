@@ -58,3 +58,4 @@ ehthumbs.db
 *.tmp
 *.bak
 *.orig
+src/main/resources/application.properties
