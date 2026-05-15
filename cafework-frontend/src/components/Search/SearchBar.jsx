@@ -165,12 +165,6 @@ const SearchBar = ({ onSearchData }) => {
                         )}
                     </div>
                 </form>
-
-                <div style={{ display: 'flex', gap: '8px', marginTop: '10px', overflowX: 'auto' }}>
-                    <button style={chipActiveStyle}>すべて</button>
-                    <button style={chipStyle}>Wi-Fiあり</button>
-                    <button style={chipStyle}>電源あり</button>
-                </div>
             </div>
 
             <div className="results-scroll-area" style={scrollAreaStyle}>
