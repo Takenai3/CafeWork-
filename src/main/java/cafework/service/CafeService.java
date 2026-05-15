@@ -21,6 +21,8 @@ public class CafeService {
     @Autowired
     private CafeRepository cafeRepository;
 
+    // === TÌM KIẾM THEO TÊN ===
+
     public List<Cafe> searchByName(String keyword) {
         System.out.println("--> Service đang xử lý từ khóa: [" + keyword + "]");
         if (keyword == null || keyword.trim().isEmpty()) {

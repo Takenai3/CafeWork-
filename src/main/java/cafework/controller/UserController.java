@@ -1,6 +1,7 @@
 package cafework.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable String id) {
+    public User getUserById(@PathVariable UUID id) {
         return userRepository.findById(id).orElse(null);
     }
 
@@ -38,13 +39,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable String id, @RequestBody User user) {
+    public User updateUser(@PathVariable UUID id, @RequestBody User user) {
         user.setId(id);
         return userRepository.save(user);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable String id) {
+    public void deleteUser(@PathVariable UUID id) {
         userRepository.deleteById(id);
     }
 }
