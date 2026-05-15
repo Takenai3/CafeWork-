@@ -6,10 +6,12 @@ Bước 1: Yêu cầu hệ thống
 Kiểm tra bằng cách mở Terminal và gõ:
 
 node -v
+
 npm -v
 
 
 Bước 2: Khởi tạo dự án bằng Vite
+
 npm install vite
 
 
@@ -20,10 +22,12 @@ npm install leaflet
 
 
 Bước 4: cài đặt cơ chế chỉ đường của leaflet
+
 npm install leaflet-routing-machine
 
 
 Cài đặt thư viện để hiển thị thông báo
+
 npm install react-hot-toast react-router-dom axios
 
 
