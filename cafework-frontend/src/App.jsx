@@ -1,24 +1,21 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-
-// Import các trang (Pages) của ứng dụng
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import CafeDetailPage from './pages/CafeDetailPage';
 
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        {/* Nơi chứa các Route điều hướng trang */}
-        <Routes>
-          {/* Route cho trang chủ */}
-          <Route path="/" element={<HomePage />} />
-
-          {/* Route cho trang chi tiết quán cafe, có tham số động :id */}
-          <Route path="/cafes/:id" element={<CafeDetailPage />} />
-        </Routes>
-      </div>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        {/* You can add more routes here, like /verify-otp or /owner/dashboard */}
+        <Route path="/cafes/:id" element={<CafeDetailPage />} />
+      </Routes>
     </Router>
   );
 }
