@@ -262,6 +262,7 @@ const styles = {
 // ============================================================
 // HELPERS
 // ============================================================
+const isLoggedIn = !!localStorage.getItem('token'); // Trả về true nếu đã đăng nhập, false nếu chưa
 const getSeatStatusClass = (status) => {
   if (status === 'AVAILABLE') return 'available';
   if (status === 'ALMOST_FULL') return 'warning';
@@ -634,7 +635,11 @@ const CafeDetailPage = () => {
                   </span>
                 )}
               </h2>
-              <button style={styles.btnWriteReview} onClick={() => setShowReviewModal(true)}>
+              <button style={styles.btnWriteReview} onClick={() => {
+                if(isLoggedIn)
+                  setShowReviewModal(true);
+                else navigate('/login');
+              }}>
                 レビューを書く
               </button>
             </div>
