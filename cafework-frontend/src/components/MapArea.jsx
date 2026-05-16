@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+import customPinImage from '../assets/my-custom-pin.png'; 
+import defaultShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // Sửa lỗi icon marker (giữ nguyên)
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -72,7 +73,15 @@ const MapArea = ({ cafes, onRouteCalculated, isRouting }) => {
 
     } catch (error) { console.error("Lỗi vẽ đường:", error); }
   };
-    
+  // Chỉnh icon marker màu đỏ để phân biệt với vị trí cafe (mặc định là xanh)
+  const myCustomIcon = L.icon({
+      iconUrl: customPinImage, // <--- Nhát kiếm quyết định: Truyền thẳng biến ảnh vào đây!
+      shadowUrl: defaultShadow,
+      iconSize: [24, 36], // Ví dụ ảnh của ngài vuông 32x32 pixel
+      iconAnchor: [16, 32], // Điểm cắm cờ (thường là điểm chính giữa ở viền dưới cùng của ảnh)
+      popupAnchor: [0, -32], // Vị trí hiện hộp thoại so với điểm cắm
+      shadowSize: [41, 41]
+  });
   // ----------------------------------------------------
   // PHÉP THUẬT 1: KHỞI TẠO BẢN ĐỒ VÀ ĐỊNH VỊ BỆ HẠ
   // ----------------------------------------------------
@@ -85,22 +94,26 @@ const MapArea = ({ cafes, onRouteCalculated, isRouting }) => {
 
       mapInstanceRef.current = map;
       markersLayerRef.current = L.layerGroup().addTo(map);
-
+      
       // Định vị bệ hạ
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             if (mapInstanceRef.current && mapInstanceRef.current._leaflet_id) {
-              const { latitude, longitude } = position.coords;
-              userCoordsRef.current = [latitude, longitude]; // LƯU LẠI TỌA ĐỘ ĐỂ LÁT NỮA DÙNG
-
-              mapInstanceRef.current.setView(userCoordsRef.current, 16); 
-              L.marker(userCoordsRef.current)
-                .addTo(mapInstanceRef.current)
-                .bindPopup('<b>あなたはここにいる!</b>')
-                .openPopup();
-              L.circle(userCoordsRef.current, { radius: 100, color: 'blue', fillOpacity: 0.1 })
-                .addTo(mapInstanceRef.current);
+              const lat = parseFloat(position.coords.latitude);
+              const lng = parseFloat(position.coords.longitude);
+              if (!isNaN(lat) && !isNaN(lng)) {
+                userCoordsRef.current = [lat, lng]; 
+                mapInstanceRef.current.setView(userCoordsRef.current, 16); 
+                
+                L.marker(userCoordsRef.current, { icon: myCustomIcon }) // Hoặc redIcon tùy bệ hạ đang dùng
+                  .addTo(mapInstanceRef.current)
+                  .bindPopup('<b>あなたはここにいる!</b>')
+                  .openPopup();
+                
+                L.circle(userCoordsRef.current, { radius: 100, color: 'blue', fillOpacity: 0.1 })
+                  .addTo(mapInstanceRef.current);
+             }
             }
           },
           (error) => console.error("位置情報の取得中にエラーが発生しました。", error),
