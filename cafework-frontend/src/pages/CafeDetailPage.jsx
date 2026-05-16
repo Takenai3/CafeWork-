@@ -12,6 +12,30 @@ const styles = {
     fontFamily: "'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif",
   },
 
+  // ── HEADER ──
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 20px',
+    borderBottom: '1px solid #eaeaea',
+    backgroundColor: '#fff',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  },
+  headerLang: { color: '#555', cursor: 'pointer', fontSize: '14px' },
+  headerLogo: { fontSize: '20px', fontWeight: 'bold', color: '#8b5a2b', cursor: 'pointer' },
+  headerActions: { display: 'flex', gap: '10px' },
+  btnLogin: {
+    padding: '7px 16px', border: '1px solid #ccc',
+    backgroundColor: '#f8f9fa', borderRadius: '6px', cursor: 'pointer', fontSize: '13px',
+  },
+  btnRegister: {
+    padding: '7px 16px', border: 'none',
+    backgroundColor: '#5c4033', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '13px',
+  },
+
   // ── NAV TABS ──
   navBar: {
     padding: '0 20px',
@@ -238,7 +262,7 @@ const styles = {
 // ============================================================
 // HELPERS
 // ============================================================
-const isLoggedIn = !!localStorage.getItem('token'); // Trả về true nếu đã đăng nhập, false nếu chưa
+const isLoggedIn = Boolean(localStorage.getItem('token'));
 const getSeatStatusClass = (status) => {
   if (status === 'AVAILABLE') return 'available';
   if (status === 'ALMOST_FULL') return 'warning';
@@ -320,28 +344,49 @@ const CafeDetailPage = () => {
       });
   };
 
-  const handleSubmitReview = () => {
+  const handleSubmitReview = async () => {
+    // 1. Kiểm tra an toàn: Không cho gửi giấy trắng
     if (!newReviewContent.trim()) return;
-    setReviewSubmitting(true);
-    axios
-      .post(`http://localhost:8080/api/reviews`, {
+
+    try {
+      setReviewSubmitting(true); // Bật trạng thái "Đang gửi..."
+
+      const token = localStorage.getItem('token');
+      // 3. Đóng gói tấu chương (Dữ liệu gửi lên Backend)
+      // Lưu ý: Biến 'id' ở đây là ID của quán cà phê đang xem
+      const payload = {
         cafeId: id,
+        rating: newReviewRating,
         content: newReviewContent,
-        rating: String(newReviewRating),
-        language: 'ja',
-      })
-      .then(() => {
-        setShowReviewModal(false);
-        setNewReviewContent('');
-        setNewReviewRating(5);
-        fetchReviews(); // Re-fetch to show the new review
-      })
-      .catch((err) => {
-        console.error('レビュー投稿エラー:', err);
-      })
-      .finally(() => {
-        setReviewSubmitting(false);
+      };
+
+      // 4. Truyền tin lên kinh thành (Gọi API)
+      await axios.post('http://localhost:8080/api/reviews', payload, {
+        headers: {
+          // NHÁT KIẾM QUYẾT ĐỊNH: Giơ thẻ bài ra cho Cấm Vệ Quân kiểm tra
+          Authorization: `Bearer ${token}` 
+        }
       });
+
+      // 5. Nếu thành công, dọn dẹp chiến trường
+      setNewReviewContent(''); // Xóa ô nhập chữ
+      setNewReviewRating(5);   // Trả sao về lại 5
+      setShowReviewModal(false); // Đóng cửa sổ lại
+      
+      // 6. Cập nhật lại danh sách để bá tánh thấy ngay tấu chương vừa viết
+      // Bệ hạ hãy gọi lại hàm lấy danh sách review ở đây (ví dụ: fetchReviews())
+      fetchReviews(); 
+
+      // Báo hỉ
+      alert("Tấu chương của bệ hạ đã được lưu danh sử sách thành công!");
+
+    } catch (error) {
+      console.error("Lỗi khi gửi tấu chương:", error);
+      alert("Khởi bẩm, có lỗi xảy ra trên đường vận chuyển ạ!");
+    } finally {
+      // Dù thành công hay thất bại cũng phải tắt trạng thái "Đang gửi..."
+      setReviewSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -601,13 +646,11 @@ const CafeDetailPage = () => {
                   </span>
                 )}
               </h2>
-              <button style={styles.btnWriteReview} onClick={() => {
-                if(isLoggedIn)
-                  setShowReviewModal(true);
-                else navigate('/login');
-              }}>
-                レビューを書く
-              </button>
+              {isLoggedIn && (
+                <button style={styles.btnWriteReview} onClick={() => setShowReviewModal(true)}>
+                  レビューを書く
+                </button>
+              )}
             </div>
 
             {reviewsLoading ? (
@@ -620,7 +663,7 @@ const CafeDetailPage = () => {
                 return (
                   <div key={r.id} style={styles.reviewCard}>
                     <div style={styles.reviewTopRow}>
-                      <span style={reviewerName}>
+                      <span style={styles.reviewerName}>
                         👤 {r.userId ? `ユーザー #${r.userId.slice(0, 6)}` : '匿名ユーザー'}
                       </span>
                       <span style={styles.reviewStars}>
@@ -698,85 +741,85 @@ const CafeDetailPage = () => {
           }}
           onClick={() => setShowReviewModal(false)}
         >
-          <div
-            style={{
-              backgroundColor: '#fff', borderRadius: '14px', padding: '28px 28px',
-              width: '440px', maxWidth: '90vw',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '18px', color: '#333' }}>
-              ✍️ レビューを書く
-            </h3>
+            <div
+              style={{
+                backgroundColor: '#fff', borderRadius: '14px', padding: '28px 28px',
+                width: '440px', maxWidth: '90vw',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '18px', color: '#333' }}>
+                ✍️ レビューを書く
+              </h3>
 
-            {/* Star Rating Picker */}
-            <div style={{ marginBottom: '14px' }}>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '8px' }}>
-                評価 <span style={{ color: '#c00' }}>*</span>
-              </label>
-              <div style={{ display: 'flex', gap: '4px' }}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    onClick={() => setNewReviewRating(star)}
-                    onMouseEnter={() => setHoveredStar(star)}
-                    onMouseLeave={() => setHoveredStar(0)}
-                    style={{
-                      fontSize: '28px', cursor: 'pointer', transition: 'transform 0.1s',
-                      transform: hoveredStar >= star ? 'scale(1.2)' : 'scale(1)',
-                      color: (hoveredStar || newReviewRating) >= star ? '#F59E0B' : '#ddd',
-                    }}
-                  >
-                    ★
+              {/* Star Rating Picker */}
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '8px' }}>
+                  評価 <span style={{ color: '#c00' }}>*</span>
+                </label>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      onClick={() => setNewReviewRating(star)}
+                      onMouseEnter={() => setHoveredStar(star)}
+                      onMouseLeave={() => setHoveredStar(0)}
+                      style={{
+                        fontSize: '28px', cursor: 'pointer', transition: 'transform 0.1s',
+                        transform: hoveredStar >= star ? 'scale(1.2)' : 'scale(1)',
+                        color: (hoveredStar || newReviewRating) >= star ? '#F59E0B' : '#ddd',
+                      }}
+                    >
+                      ★
+                    </span>
+                  ))}
+                  <span style={{ fontSize: '13px', color: '#888', alignSelf: 'center', marginLeft: '8px' }}>
+                    {newReviewRating}点
                   </span>
-                ))}
-                <span style={{ fontSize: '13px', color: '#888', alignSelf: 'center', marginLeft: '8px' }}>
-                  {newReviewRating}点
-                </span>
+                </div>
+              </div>
+
+              {/* Content Input */}
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
+                  コメント <span style={{ color: '#c00' }}>*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={newReviewContent}
+                  onChange={(e) => setNewReviewContent(e.target.value)}
+                  placeholder="このカフェの感想を教えてください..."
+                  style={{
+                    width: '100%', padding: '10px 12px', borderRadius: '8px',
+                    border: '1.5px solid #ddd', fontSize: '13px', resize: 'vertical',
+                    outline: 'none', fontFamily: 'inherit',
+                    borderColor: newReviewContent.trim() ? '#8b5a2b' : '#ddd',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button
+                  style={{ ...styles.btnLogin, padding: '9px 20px' }}
+                  onClick={() => { setShowReviewModal(false); setNewReviewContent(''); setNewReviewRating(5); }}
+                  disabled={reviewSubmitting}
+                >
+                  キャンセル
+                </button>
+                <button
+                  style={{
+                    ...styles.btnRegister, padding: '9px 20px',
+                    opacity: (!newReviewContent.trim() || reviewSubmitting) ? 0.6 : 1,
+                    cursor: (!newReviewContent.trim() || reviewSubmitting) ? 'not-allowed' : 'pointer',
+                  }}
+                  onClick={handleSubmitReview}
+                  disabled={!newReviewContent.trim() || reviewSubmitting}
+                >
+                  {reviewSubmitting ? '投稿中...' : '投稿する'}
+                </button>
               </div>
             </div>
-
-            {/* Content Input */}
-            <div style={{ marginBottom: '18px' }}>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                コメント <span style={{ color: '#c00' }}>*</span>
-              </label>
-              <textarea
-                rows={4}
-                value={newReviewContent}
-                onChange={(e) => setNewReviewContent(e.target.value)}
-                placeholder="このカフェの感想を教えてください..."
-                style={{
-                  width: '100%', padding: '10px 12px', borderRadius: '8px',
-                  border: '1.5px solid #ddd', fontSize: '13px', resize: 'vertical',
-                  outline: 'none', fontFamily: 'inherit',
-                  borderColor: newReviewContent.trim() ? '#8b5a2b' : '#ddd',
-                }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <button
-                style={{ ...styles.btnLogin, padding: '9px 20px' }}
-                onClick={() => { setShowReviewModal(false); setNewReviewContent(''); setNewReviewRating(5); }}
-                disabled={reviewSubmitting}
-              >
-                キャンセル
-              </button>
-              <button
-                style={{
-                  ...styles.btnRegister, padding: '9px 20px',
-                  opacity: (!newReviewContent.trim() || reviewSubmitting) ? 0.6 : 1,
-                  cursor: (!newReviewContent.trim() || reviewSubmitting) ? 'not-allowed' : 'pointer',
-                }}
-                onClick={handleSubmitReview}
-                disabled={!newReviewContent.trim() || reviewSubmitting}
-              >
-                {reviewSubmitting ? '投稿中...' : '投稿する'}
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
