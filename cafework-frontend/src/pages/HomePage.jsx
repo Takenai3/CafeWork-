@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import MapArea from '../components/MapArea';
 import SearchBar from '../components/Search/SearchBar'; 
-import Header from '../components/layout/Header';
 
 const HomePage = () => {
   const [cafes, setCafes] = useState([]);
@@ -27,11 +26,8 @@ const HomePage = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', fontFamily: 'sans-serif' }}>
       
-      {/* HEADER BÊN TRÊN */}
-      <Header />
-
       <div style={{ padding: '0 20px', borderBottom: '1px solid #eaeaea', backgroundColor: '#fff' }}>
         <div style={{ display: 'inline-block', padding: '10px 15px', borderBottom: '3px solid #8b5a2b', fontWeight: 'bold', color: '#333' }}>ホーム</div>
       </div>
