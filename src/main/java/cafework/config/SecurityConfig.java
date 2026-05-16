@@ -22,6 +22,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cafes/**").permitAll() // Allow guests to view/search cafes
+                .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
