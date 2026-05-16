@@ -12,30 +12,6 @@ const styles = {
     fontFamily: "'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif",
   },
 
-  // ── HEADER ──
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 20px',
-    borderBottom: '1px solid #eaeaea',
-    backgroundColor: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-  },
-  headerLang: { color: '#555', cursor: 'pointer', fontSize: '14px' },
-  headerLogo: { fontSize: '20px', fontWeight: 'bold', color: '#8b5a2b', cursor: 'pointer' },
-  headerActions: { display: 'flex', gap: '10px' },
-  btnLogin: {
-    padding: '7px 16px', border: '1px solid #ccc',
-    backgroundColor: '#f8f9fa', borderRadius: '6px', cursor: 'pointer', fontSize: '13px',
-  },
-  btnRegister: {
-    padding: '7px 16px', border: 'none',
-    backgroundColor: '#5c4033', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '13px',
-  },
-
   // ── NAV TABS ──
   navBar: {
     padding: '0 20px',
@@ -424,16 +400,6 @@ const CafeDetailPage = () => {
         }
       `}</style>
 
-      {/* ── HEADER ── */}
-      <header style={styles.header}>
-        <span style={styles.headerLang}>🌐 JP 日本語</span>
-        <span style={styles.headerLogo} onClick={() => navigate('/')}>☕ カフェワーク</span>
-        <div style={styles.headerActions}>
-          <button style={styles.btnLogin}>ログイン</button>
-          <button style={styles.btnRegister}>登録</button>
-        </div>
-      </header>
-
       {/* ── NAV TABS ── */}
       <nav style={styles.navBar}>
         <span style={styles.navTabActive} onClick={() => navigate('/')}>ホーム</span>
@@ -649,7 +615,7 @@ const CafeDetailPage = () => {
                 return (
                   <div key={r.id} style={styles.reviewCard}>
                     <div style={styles.reviewTopRow}>
-                      <span style={styles.reviewerName}>
+                      <span style={reviewerName}>
                         👤 {r.userId ? `ユーザー #${r.userId.slice(0, 6)}` : '匿名ユーザー'}
                       </span>
                       <span style={styles.reviewStars}>
