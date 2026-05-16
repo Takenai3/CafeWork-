@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import styles from './LoginCard.module.css';
-import api from '../../api/axiosClient';
+import api from '../../api/axiosConfig';
 
 const LoginCard = ({ onSwitchToSignup }) => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const LoginCard = ({ onSwitchToSignup }) => {
 
     setLoading(true);
     try {
-      const response = await api.post('/auth/login', formData);
+      const response = await api.post('/api/auth/login', formData);
 
       if (response.status === 200) {
         const data = response.data;

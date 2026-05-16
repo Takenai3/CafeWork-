@@ -2,21 +2,13 @@ package cafework.service.impl;
 
 import cafework.dto.request.LoginRequest;
 import cafework.dto.request.RegisterRequest;
-import cafework.dto.request.VerifyOtpRequest;
 import cafework.dto.response.AuthResponse;
-import cafework.model.Otp;
 import cafework.model.User;
-import cafework.repository.OtpRepository;
 import cafework.repository.UserRepository;
 import cafework.security.JwtUtil;
 import cafework.service.AuthService;
-import cafework.util.EmailUtil;
-import cafework.util.OtpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -25,67 +17,28 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private OtpRepository otpRepository;
-
-    @Autowired
-    private OtpUtil otpUtil;
-
-    @Autowired
-    private EmailUtil emailUtil;
-
-    @Autowired
     private JwtUtil jwtUtil;
 
     @Override
-    public void initiateRegistration(RegisterRequest request) throws Exception {
+    public AuthResponse registerDirectly(RegisterRequest request) throws Exception {
         // 1. Check if user already exists
         if (userRepository.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
             throw new Exception("Email already registered!");
         }
 
-        // 2. Generate OTP
-        String code = otpUtil.generateOtp();
-
-        // 3. Save OTP to DB
-        Otp otp = Otp.builder()
-                .email(request.getEmail())
-                .otpCode(code)
-                .expiresAt(LocalDateTime.now().plusMinutes(5))
-                .isUsed(false)
-                .build();
-        otpRepository.save(otp);
-
-        // 4. Send Real Email
-        emailUtil.sendOtpEmail(request.getEmail(), code);
-    }
-
-    @Override
-    public AuthResponse verifyAndRegister(VerifyOtpRequest request, RegisterRequest registerData) throws Exception {
-        // 1. Verify OTP
-        Optional<Otp> otpOpt = otpRepository.findByEmailAndOtpCodeAndIsUsedFalseAndExpiresAtAfter(
-                request.getEmail(), request.getOtpCode(), LocalDateTime.now());
-
-        if (otpOpt.isEmpty()) {
-            throw new Exception("Invalid or expired OTP!");
-        }
-
-        // 2. Mark OTP as used
-        Otp otp = otpOpt.get();
-        otp.setUsed(true);
-        otpRepository.save(otp);
-
-        // 3. Save User (Plain-text password)
+        // 2. Map role
         User.Role role = User.Role.USER;
-        if (registerData.getRole() != null) {
+        if (request.getRole() != null) {
             try {
-                role = User.Role.valueOf(registerData.getRole().toUpperCase());
+                role = User.Role.valueOf(request.getRole().toUpperCase());
             } catch (IllegalArgumentException ignored) {}
         }
 
+        // 3. Save User (Plain-text password)
         User user = User.builder()
-                .email(registerData.getEmail())
-                .password(registerData.getPassword()) // Plain text as requested
-                .fullName(registerData.getFullName())
+                .email(request.getEmail())
+                .password(request.getPassword()) // Plain text as requested
+                .fullName(request.getFullName())
                 .role(role)
                 .build();
         
