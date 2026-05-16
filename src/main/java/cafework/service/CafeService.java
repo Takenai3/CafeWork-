@@ -2,98 +2,18 @@ package cafework.service;
 
 import cafework.dto.SeatStatusUpdateRequest;
 import cafework.dto.SeatStatusUpdateResponse;
+import cafework.dto.request.CafeRequest;
 import cafework.model.Cafe;
-import cafework.repository.CafeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-@Service
-public class CafeService {
-
-    // Danh sách giá trị hợp lệ cho seat_status (phải khớp với DB constraint)
-    private static final List<String> VALID_SEAT_STATUSES = Arrays.asList(
-            "AVAILABLE", "ALMOST_FULL", "FULL");
-
-    @Autowired
-    private CafeRepository cafeRepository;
-
-    // === TÌM KIẾM THEO TÊN ===
-
-    public List<Cafe> searchByName(String keyword) {
-        System.out.println("--> Service đang xử lý từ khóa: [" + keyword + "]");
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return cafeRepository.findAll();
-        }
-        return cafeRepository.findByNameContainingIgnoreCase(keyword.trim());
-    }
-
-    public Cafe getCafeDetailsById(String id) {
-        System.out.println("--> Service đang lấy chi tiết quán có ID: [" + id + "]");
-        Optional<Cafe> cafeOptional = cafeRepository.findById(id);
-        return cafeOptional.orElse(null);
-    }
-
-    /**
-     * [ID.4 - No.13] Đồng bộ trạng thái chỗ ngồi từ màn hình quản lý của chủ quán.
-     *
-     * Logic:
-     * 1. Kiểm tra quán tồn tại (theo cafeId).
-     * 2. Validate giá trị seatStatus đầu vào ("AVAILABLE", "ALMOST_FULL", "FULL").
-     * 3. Cập nhật seat_status vào DB.
-     * 4. Trả về response với thông tin quán đã cập nhật.
-     *
-     * Mapping màn hình (bản đặc tả):
-     * - AVAILABLE → 空席あり (xanh lá)
-     * - ALMOST_FULL → 残りわずか (vàng)
-     * - FULL → 満席 (đỏ)
-     *
-     * @param cafeId  ID của quán cafe (path variable từ URL)
-     * @param request Body chứa seatStatus mới
-     * @return SeatStatusUpdateResponse hoặc null nếu không tìm thấy quán
-     * @throws IllegalArgumentException nếu seatStatus không hợp lệ
-     */
-    public SeatStatusUpdateResponse updateSeatStatus(String cafeId, SeatStatusUpdateRequest request) {
-        System.out.println("=========================================");
-        System.out.println("--> [ID.4] updateSeatStatus được gọi");
-        System.out.println("--> Cafe ID : " + cafeId);
-        System.out.println("--> New status: " + request.getSeatStatus());
-
-        // Bước 1: Validate giá trị đầu vào
-        String newStatus = request.getSeatStatus();
-        if (newStatus == null || newStatus.trim().isEmpty()) {
-            throw new IllegalArgumentException("seatStatus không được để trống.");
-        }
-        if (!VALID_SEAT_STATUSES.contains(newStatus.toUpperCase())) {
-            throw new IllegalArgumentException(
-                    "seatStatus không hợp lệ: [" + newStatus + "]. " +
-                            "Giá trị chấp nhận: AVAILABLE, ALMOST_FULL, FULL.");
-        }
-
-        // Bước 2: Tìm quán trong DB
-        Optional<Cafe> cafeOptional = cafeRepository.findById(cafeId);
-        if (cafeOptional.isEmpty()) {
-            System.out.println("--> Không tìm thấy quán với ID: " + cafeId);
-            return null;
-        }
-
-        // Bước 3: Cập nhật trạng thái và lưu vào DB
-        Cafe cafe = cafeOptional.get();
-        String oldStatus = cafe.getSeatStatus();
-        cafe.setSeatStatus(newStatus.toUpperCase());
-        cafeRepository.save(cafe);
-
-        System.out.println("--> Đã cập nhật: [" + oldStatus + "] → [" + cafe.getSeatStatus() + "]");
-        System.out.println("=========================================");
-
-        // Bước 4: Trả về response
-        return new SeatStatusUpdateResponse(
-                cafe.getId(),
-                cafe.getName(),
-                cafe.getSeatStatus(),
-                "Trạng thái chỗ ngồi đã được cập nhật thành công.");
-    }
+public interface CafeService {
+    List<Cafe> searchByName(String keyword);
+    Cafe getCafeDetailsById(UUID id);
+    SeatStatusUpdateResponse updateSeatStatus(UUID cafeId, SeatStatusUpdateRequest request);
+    
+    // Feature 11b
+    Cafe getCafeByOwnerId(UUID ownerId);
+    Cafe updateCafe(UUID ownerId, CafeRequest request);
 }

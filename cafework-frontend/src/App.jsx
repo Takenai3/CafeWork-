@@ -6,19 +6,27 @@ import SignupPage from './pages/SignupPage';
 import CafeDetailPage from './pages/CafeDetailPage';
 import VerifyOtpPage from './pages/VerifyOtpPage';
 import Header from './components/layout/Header';
+import OwnerLayout from './components/layout/OwnerLayout';
+import OwnerDashboardPage from './pages/owner/OwnerDashboardPage';
+import CafeManagementPage from './pages/owner/CafeManagementPage';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" reverseOrder={false} />
-      <Header />
+      <Header /> {/* Fixed Global Header */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
-        {/* You can add more routes here, like /owner/dashboard */}
         <Route path="/cafes/:id" element={<CafeDetailPage />} />
+        
+        {/* Owner Routes */}
+        <Route path="/owner" element={<OwnerLayout />}>
+          <Route path="dashboard" element={<OwnerDashboardPage />} />
+          <Route path="cafe-management" element={<CafeManagementPage />} />
+        </Route>
       </Routes>
     </Router>
   );
