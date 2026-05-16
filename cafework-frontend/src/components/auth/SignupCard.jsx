@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import styles from './SignupCard.module.css';
-import api from '../../api/axiosConfig';
+import api from '../../api/axiosClient';
 
 const SignupCard = ({ onSwitchToLogin }) => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const SignupCard = ({ onSwitchToLogin }) => {
 
     setLoading(true);
     try {
-      const response = await api.post('/api/auth/signup/direct', {
+      const response = await api.post('/auth/signup/initiate', {
         email: formData.email,
         password: formData.password,
         fullName: formData.fullName,
@@ -53,17 +53,9 @@ const SignupCard = ({ onSwitchToLogin }) => {
       });
 
       if (response.status === 200) {
-        const data = response.data;
-        toast.success('アカウント登録が完了しました！');
-        
-        // Save token and user info
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-        localStorage.setItem('fullName', data.fullName);
-        localStorage.setItem('user', JSON.stringify(data));
-        
-        // Redirect to Home
-        navigate('/');
+        toast.success('メールに認証コードを送信しました。');
+        // Chuyển hướng sang trang nhập OTP, truyền kèm email
+        navigate('/verify-otp', { state: { email: formData.email } });
       }
     } catch (err) {
       const errorMsg = err.response?.data || '登録に失敗しました。';
