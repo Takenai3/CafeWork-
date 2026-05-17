@@ -663,9 +663,18 @@ const CafeDetailPage = () => {
                 return (
                   <div key={r.id} style={styles.reviewCard}>
                     <div style={styles.reviewTopRow}>
-                      <span style={styles.reviewerName}>
-                        👤 {r.userId ? `ユーザー #${r.userId.slice(0, 6)}` : '匿名ユーザー'}
-                      </span>
+                      {/* Cột chứa Tên và Ngày tháng */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={styles.reviewerName}>
+                          {/* Ưu tiên hiển thị r.userName, nếu không có mới dùng ID cắt ngắn */}
+                          👤 {r.userName || (r.userId ? `ユーザー #${r.userId.slice(0, 6)}` : '匿名ユーザー')}
+                        </span>
+                        <span style={{ fontSize: '12px', color: '#888' }}>
+                          {/* Format ngày tháng sang kiểu Nhật (VD: 2026/05/17) */}
+                          📅 {r.createdAt ? new Date(r.createdAt).toLocaleDateString('ja-JP') : '日付不明'}
+                        </span>
+                      </div>
+                      
                       <span style={styles.reviewStars}>
                         {'★'.repeat(Math.min(ratingNum, 5))}{'☆'.repeat(Math.max(0, 5 - ratingNum))}
                       </span>

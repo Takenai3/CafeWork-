@@ -44,7 +44,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         
         // 3. Dùng cẩm nang JwtUtil để đọc tên (email) từ thẻ bài
-        userEmail = jwtUtil.extractEmail(jwt);
+        try {
+            userEmail = jwtUtil.extractEmail(jwt);
+        } catch (Exception e) {
+            System.out.println("🚨 Bẩm bệ hạ, có kẻ dùng thẻ bài lỗi/hết hạn: " + e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // 4. Nếu đọc được tên và người này chưa được Cấm Vệ Quân ghi nhận
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
