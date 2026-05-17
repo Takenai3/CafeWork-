@@ -44,4 +44,13 @@ public class User {
     public enum Role {
         USER, OWNER
     }
+    // Ngài tự tay rèn hàm lấy ID
+    public UUID getId() {
+        return id;
+    }
+
+    // Ngài tự tay rèn hàm lấy Tên
+    public String getFullName() {
+        return fullName;
+    }
 }

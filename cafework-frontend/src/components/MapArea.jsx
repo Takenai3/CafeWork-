@@ -78,7 +78,7 @@ const MapArea = ({ cafes, onRouteCalculated, isRouting }) => {
       iconUrl: customPinImage, // <--- Nhát kiếm quyết định: Truyền thẳng biến ảnh vào đây!
       shadowUrl: defaultShadow,
       iconSize: [24, 36], // Ví dụ ảnh của ngài vuông 32x32 pixel
-      iconAnchor: [16, 32], // Điểm cắm cờ (thường là điểm chính giữa ở viền dưới cùng của ảnh)
+      iconAnchor: [12, 36], // Điểm cắm cờ (thường là điểm chính giữa ở viền dưới cùng của ảnh)
       popupAnchor: [0, -32], // Vị trí hiện hộp thoại so với điểm cắm
       shadowSize: [41, 41]
   });
