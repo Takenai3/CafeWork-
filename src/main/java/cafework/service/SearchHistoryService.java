@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SearchHistoryService {
-    void saveKeyword(String keyword, String userId);
+    void saveKeyword(String keyword, UUID userId);
 
-    List<SearchHistory> getHistory(String userId);
+    List<SearchHistory> getHistory(UUID userId);
 }

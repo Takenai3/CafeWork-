@@ -10,11 +10,7 @@ import cafework.service.SearchHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cafework.model.SearchHistory;
 import cafework.repository.SearchHistoryRepository;
@@ -47,7 +43,7 @@ public class SearchHistoryController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
-        List<SearchHistory> history = searchHistoryService.getHistory(user.getId().toString());
+        List<SearchHistory> history = searchHistoryService.getHistory(user.getId());
         return ResponseEntity.ok(history);
     }
 
@@ -65,5 +61,19 @@ public class SearchHistoryController {
         }
         searchHistoryRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/history")
+    public ResponseEntity<?> saveHistory(@RequestBody String keyword) {
+        String email = SecurityUtils.getCurrentUserEmail();
+
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+
+        searchHistoryService.saveKeyword(keyword, user.getId());
+
+        return ResponseEntity.ok().build();
     }
 }

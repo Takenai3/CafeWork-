@@ -43,30 +43,6 @@ public class CafeServiceImpl implements CafeService {
                         + keyword + "]"
         );
 
-        // Tự động lưu lịch sử tìm kiếm
-        String email =
-                SecurityUtils.getCurrentUserEmail();
-
-        if (email != null
-                && keyword != null
-                && !keyword.trim().isEmpty()) {
-
-            userRepository
-                    .findByEmailIgnoreCase(email)
-                    .ifPresent(user -> {
-
-                        searchHistoryService.saveKeyword(
-                                keyword.trim(),
-                                user.getId().toString()
-                        );
-
-                        System.out.println(
-                                "--> Đã lưu lịch sử tìm kiếm cho user: "
-                                        + email
-                        );
-                    });
-        }
-
         if (keyword == null
                 || keyword.trim().isEmpty()) {
 
