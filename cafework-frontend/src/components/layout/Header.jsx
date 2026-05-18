@@ -47,7 +47,7 @@ const Header = () => {
       {/* Middle: Logo */}
       <div className={styles.centerSection}>
         <Link to="/" className={styles.logo}>
-          カフェワーク
+          ☕カフェワーク
         </Link>
       </div>
 
