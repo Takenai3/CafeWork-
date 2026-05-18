@@ -289,7 +289,7 @@ const isJapanese = (text) => {
   if (!text) return true; // Nếu trống thì cứ coi như tiếng Nhật cho khỏi hiện nút
   // Regex quét bảng mã Unicode của tiếng Nhật
   const jpRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/;
-  return jpRegex.test(text);
+  return jpRegex.test(text); 
 };
 // ============================================================
 // COMPONENT
@@ -312,10 +312,6 @@ const CafeDetailPage = () => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(Boolean(token));
   }, [location]);
-
-  useEffect(() => {
-    setIsFavorite(isBookmarked(id));
-  }, [id]);
   // Review states
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
@@ -456,7 +452,7 @@ const CafeDetailPage = () => {
       // Dùng trạm dịch thuật miễn phí MyMemory (Từ Anh sang Nhật: en|ja)
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ja`;
       console.log("🌐 Đang chạy sang trạm dịch:", url);
-
+      
       const response = await axios.get(url);
       console.log("📦 Trạm dịch trả hàng về:", response.data);
 
@@ -728,7 +724,6 @@ const CafeDetailPage = () => {
                           📅 {r.createdAt ? new Date(r.createdAt).toLocaleDateString('ja-JP') : '日付不明'}
                         </span>
                       </div>
-
                       <span style={styles.reviewStars}>
                         {'★'.repeat(Math.min(ratingNum, 5))}{'☆'.repeat(Math.max(0, 5 - ratingNum))}
                       </span>
@@ -739,11 +734,11 @@ const CafeDetailPage = () => {
                       <>
                         {/* Nếu chưa có bản dịch thì hiện nút bấm */}
                         {!translations[r.id] ? (
-                          <button
+                          <button 
                             onClick={() => handleTranslate(r.id, r.content)}
                             disabled={translatingIds[r.id]}
-                            style={{
-                              fontSize: '12px', color: '#1a73e8', background: 'none',
+                            style={{ 
+                              fontSize: '12px', color: '#1a73e8', background: 'none', 
                               border: 'none', cursor: 'pointer', padding: 0, marginTop: '8px',
                               display: 'flex', alignItems: 'center', gap: '4px'
                             }}
@@ -752,9 +747,9 @@ const CafeDetailPage = () => {
                           </button>
                         ) : (
                           /* Nếu đã dịch xong thì hiện khung kết quả */
-                          <div style={{
-                            marginTop: '12px', padding: '10px', backgroundColor: '#f4f6f8',
-                            borderRadius: '6px', borderLeft: '3px solid #1a73e8'
+                          <div style={{ 
+                            marginTop: '12px', padding: '10px', backgroundColor: '#f4f6f8', 
+                            borderRadius: '6px', borderLeft: '3px solid #1a73e8' 
                           }}>
                             <span style={{ fontSize: '11px', color: '#5f6368', marginBottom: '6px', display: 'block', fontWeight: 'bold' }}>
                               🌐 Google翻訳:
