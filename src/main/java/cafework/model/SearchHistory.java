@@ -1,44 +1,36 @@
 package cafework.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "search_history")
+@Table(name = "search_histories")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SearchHistory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    private String userId;
+    @Column(name = "user_id")
+    private UUID userId;
+
+    @Column(name = "search_query")
     private String keyword;
 
-    public SearchHistory() {}
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "filters", columnDefinition = "jsonb")
+    private JsonNode filter;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

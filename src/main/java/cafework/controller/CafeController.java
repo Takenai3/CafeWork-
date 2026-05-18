@@ -4,6 +4,7 @@ import java.util.List;
 
 import cafework.dto.SeatStatusUpdateRequest;
 import cafework.dto.SeatStatusUpdateResponse;
+import cafework.service.SearchHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,8 @@ public class CafeController {
 
     @Autowired
     private CafeService cafeService;
+    @Autowired
+    private SearchHistoryService searchHistoryService;
 
     // === CÁC API CƠ BẢN ===
 

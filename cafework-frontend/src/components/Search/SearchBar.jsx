@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchCafes } from '../../services/cafeService';
+import { saveSearchHistory } from '../../services/searchHistoryService';
 import L from 'leaflet'; // Bổ sung Leaflet để tính khoảng cách
 import './SearchBar.css';
 
-const SearchBar = ({ onSearchData }) => {
+const SearchBar = ({ onSearchData, externalKeyword, onSearchCompleted }) => {
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
     const [results, setResults] = useState([]);
@@ -39,15 +40,32 @@ const SearchBar = ({ onSearchData }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+    useEffect(() => {
+        if (externalKeyword && externalKeyword.trim() !== '') {
+            setKeyword(externalKeyword);
 
-    const handleSearchEvent = async (searchKeyword) => {
+            // search luôn
+            handleSearchEvent(externalKeyword, false);
+
+            // báo cho HomePage biết là search xong rồi
+            if (onSearchCompleted) {
+                onSearchCompleted();
+            }
+        }
+    }, [externalKeyword]);
+
+    const handleSearchEvent = async (searchKeyword, saveHistory = true) => {
         setShowDropdown(false);
         setLoading(true);
         setError(null);
         try {
             const data = await searchCafes(searchKeyword);
             setResults(data);
-            onSearchData(data); 
+            onSearchData(data);
+            // lưu lịch sử
+            if (saveHistory) {
+                await saveSearchHistory(searchKeyword);
+            }
         } catch (err) {
             console.error("Lỗi:", err);
             setError('エラーが発生しました。');

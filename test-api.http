@@ -1,0 +1,3 @@
+
+GET http://localhost:8080/api/search-history
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMzdAdGVzdC5jb20iLCJpYXQiOjE3NzkwMDAzMDYsImV4cCI6MTc3OTA4NjcwNn0.Zuo3HUmrmQ2ZtIq6XjM8YxeTm6QXtMa06JVl3DfE7oM
