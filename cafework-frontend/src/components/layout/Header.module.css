@@ -19,7 +19,14 @@
   align-items: center;
 }
 
+.languageWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .languageDropdown {
+  appearance: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -27,6 +34,43 @@
   color: #4a4a4a;
   font-size: 14px;
   font-weight: 500;
+  background: transparent;
+  border: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.languageDropdown:hover {
+  background-color: #fdf8f5;
+}
+
+.langMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  z-index: 60;
+}
+
+.langMenuItem {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 10px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.langMenuItem:hover {
+  background-color: #fdf8f5;
 }
 
 .flag {
@@ -94,6 +138,18 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.profileLink:hover .userName {
+  color: #333;
 }
 
 .avatar {

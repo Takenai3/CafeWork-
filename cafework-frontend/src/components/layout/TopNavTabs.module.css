@@ -1,0 +1,34 @@
+.navBar {
+    padding: 0 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #fff;
+    display: flex;
+    gap: 2px;
+}
+
+.navTab {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+}
+
+.navTab:hover {
+    color: #555;
+}
+
+.navTabActive {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 10px 15px;
+    border-bottom: 3px solid #8b5a2b;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+}

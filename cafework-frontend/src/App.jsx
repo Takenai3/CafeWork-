@@ -1,25 +1,54 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
+import CafeDetailPage from './pages/CafeDetailPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import CafeDetailPage from './pages/CafeDetailPage';
 import VerifyOtpPage from './pages/VerifyOtpPage';
+import OwnerDashboardPage from './pages/owner/OwnerDashboardPage';
+import CafeManagementPage from './pages/owner/CafeManagementPage';
+import ProfilePage from './pages/profile/ProfilePage'; // Import trang quản lý hồ sơ vừa tạo
+import MyListPage from './pages/MyListPage';
+import SearchHistoryPage from './pages/SearchHistoryPage';
 import Header from './components/layout/Header';
+
+const AppShell = () => {
+  const location = useLocation();
+  const hideHeaderPaths = ['/login', '/signup', '/verify-otp'];
+  const shouldHideHeader =
+    hideHeaderPaths.includes(location.pathname);
+
+  return (
+    <>
+      <Toaster position="top-right" toastOptions={{ duration: 2500 }} />
+      {!shouldHideHeader && <Header />}
+      <Routes>
+        {/* Các route công khai */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/cafes/:id" element={<CafeDetailPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
+        {/* Các route dành cho chủ quán (Owner) */}
+        <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+        <Route path="/owner/cafe-management" element={<CafeManagementPage />} />
+
+        {/* Route quản lý hồ sơ (Người dùng / Chủ quán) */}
+        <Route path="/profile" element={<ProfilePage />} />
+
+        {/* Tabs: My list + Search history */}
+        <Route path="/my-list" element={<MyListPage />} />
+        <Route path="/search-history" element={<SearchHistoryPage />} />
+      </Routes>
+    </>
+  );
+};
 
 function App() {
   return (
     <Router>
-      <Toaster position="top-right" reverseOrder={false} />
-      <Header />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/verify-otp" element={<VerifyOtpPage />} />
-        {/* You can add more routes here, like /owner/dashboard */}
-        <Route path="/cafes/:id" element={<CafeDetailPage />} />
-      </Routes>
+      <AppShell />
     </Router>
   );
 }
