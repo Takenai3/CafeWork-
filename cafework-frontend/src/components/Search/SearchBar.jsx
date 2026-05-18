@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchCafes } from '../../services/cafeService';
 import L from 'leaflet'; // Bổ sung Leaflet để tính khoảng cách
+import { addSearchHistory } from '../../utils/userLocalStore';
 import './SearchBar.css';
 
 const SearchBar = ({ onSearchData }) => {
@@ -13,12 +14,12 @@ const SearchBar = ({ onSearchData }) => {
 
     const [suggestions, setSuggestions] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    
+
     // --- STATE MỚI CHO SẮP XẾP VÀ GPS ---
     const [showSortMenu, setShowSortMenu] = useState(false);
-    const [sortBy, setSortBy] = useState('default'); 
+    const [sortBy, setSortBy] = useState('default');
     const [userLocation, setUserLocation] = useState({ lat: 21.0071, lng: 105.8431 }); // Mặc định là Bách Khoa
-    
+
     const searchBoxRef = useRef(null);
     const sortMenuRef = useRef(null);
     const typingTimeoutRef = useRef(null); // Debounce cho Autocomplete
@@ -45,9 +46,10 @@ const SearchBar = ({ onSearchData }) => {
         setLoading(true);
         setError(null);
         try {
+            addSearchHistory(searchKeyword);
             const data = await searchCafes(searchKeyword);
             setResults(data);
-            onSearchData(data); 
+            onSearchData(data);
         } catch (err) {
             console.error("Lỗi:", err);
             setError('エラーが発生しました。');
@@ -100,12 +102,12 @@ const SearchBar = ({ onSearchData }) => {
             const distB = L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(b.latitude, b.longitude));
             return distA - distB;
         }
-        return 0; 
+        return 0;
     });
 
     return (
         <div className="sidebar-content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            
+
             <div style={{ padding: '10px 15px', backgroundColor: 'white', zIndex: 10 }}>
                 <form onSubmit={onSubmit} className="search-box-modern" ref={searchBoxRef}>
                     <div className="input-wrapper" style={{ position: 'relative', width: '100%' }}>
@@ -119,7 +121,7 @@ const SearchBar = ({ onSearchData }) => {
                             className="search-input-modern"
                             style={{ width: '100%', padding: '10px 10px 10px 35px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
                         />
-                        
+
                         {showDropdown && keyword.trim().length > 0 && (
                             <ul className="autocomplete-dropdown" style={autocompleteStyle}>
                                 {suggestions.map((cafe) => (
@@ -133,7 +135,7 @@ const SearchBar = ({ onSearchData }) => {
                             </ul>
                         )}
                     </div>
-                    
+
                     {/* BỘ LỌC CÓ MENU DROPDOWN TÍCH HỢP */}
                     <div style={{ position: 'relative' }} ref={sortMenuRef}>
                         <button type="button" style={filterBtnStyle} onClick={() => setShowSortMenu(!showSortMenu)}>
@@ -149,7 +151,7 @@ const SearchBar = ({ onSearchData }) => {
                                 <line x1="17" y1="16" x2="23" y2="16"></line>
                             </svg>
                         </button>
-                        
+
                         {showSortMenu && (
                             <div style={sortDropdownStyle}>
                                 <div style={getSortItemStyle(sortBy === 'default')} onClick={() => { setSortBy('default'); setShowSortMenu(false); }}>
@@ -168,9 +170,9 @@ const SearchBar = ({ onSearchData }) => {
             </div>
 
             <div className="results-scroll-area" style={scrollAreaStyle}>
-                {loading && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>読み込み中...</p>}
-                {!loading && sortedResults.length === 0 && keyword && <p style={{textAlign: 'center', color: '#666', fontSize: '13px'}}>カフェが見つかりません</p>}
-                
+                {loading && <p style={{ textAlign: 'center', color: '#666', fontSize: '13px' }}>読み込み中...</p>}
+                {!loading && sortedResults.length === 0 && keyword && <p style={{ textAlign: 'center', color: '#666', fontSize: '13px' }}>カフェが見つかりません</p>}
+
                 {sortedResults.map((cafe) => (
                     <div
                         key={cafe.id}
@@ -192,8 +194,8 @@ const SearchBar = ({ onSearchData }) => {
                                 alt={cafe.name}
                                 style={imageStyle}
                                 onError={(e) => {
-                                    e.target.onerror = null; 
-                                    e.target.src = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80'; 
+                                    e.target.onerror = null;
+                                    e.target.src = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80';
                                 }}
                             />
                             <button style={heartBtnStyle}>
