@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { isBookmarked, toggleBookmark } from '../utils/userLocalStore';
 
 // ============================================================
 // STYLES
@@ -288,7 +289,7 @@ const isJapanese = (text) => {
   if (!text) return true; // Nếu trống thì cứ coi như tiếng Nhật cho khỏi hiện nút
   // Regex quét bảng mã Unicode của tiếng Nhật
   const jpRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/;
-  return jpRegex.test(text); 
+  return jpRegex.test(text);
 };
 // ============================================================
 // COMPONENT
@@ -311,6 +312,10 @@ const CafeDetailPage = () => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(Boolean(token));
   }, [location]);
+
+  useEffect(() => {
+    setIsFavorite(isBookmarked(id));
+  }, [id]);
   // Review states
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
@@ -375,7 +380,7 @@ const CafeDetailPage = () => {
       await axios.post('http://localhost:8080/api/reviews', payload, {
         headers: {
           // NHÁT KIẾM QUYẾT ĐỊNH: Giơ thẻ bài ra cho Cấm Vệ Quân kiểm tra
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         }
       });
 
@@ -383,10 +388,10 @@ const CafeDetailPage = () => {
       setNewReviewContent(''); // Xóa ô nhập chữ
       setNewReviewRating(5);   // Trả sao về lại 5
       setShowReviewModal(false); // Đóng cửa sổ lại
-      
+
       // 6. Cập nhật lại danh sách để bá tánh thấy ngay tấu chương vừa viết
       // Bệ hạ hãy gọi lại hàm lấy danh sách review ở đây (ví dụ: fetchReviews())
-      fetchReviews(); 
+      fetchReviews();
 
       // Báo hỉ
       alert("Tấu chương của bệ hạ đã được lưu danh sử sách thành công!");
@@ -451,7 +456,7 @@ const CafeDetailPage = () => {
       // Dùng trạm dịch thuật miễn phí MyMemory (Từ Anh sang Nhật: en|ja)
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ja`;
       console.log("🌐 Đang chạy sang trạm dịch:", url);
-      
+
       const response = await axios.get(url);
       console.log("📦 Trạm dịch trả hàng về:", response.data);
 
@@ -488,8 +493,8 @@ const CafeDetailPage = () => {
       {/* ── NAV TABS ── */}
       <nav style={styles.navBar}>
         <span style={styles.navTabActive} onClick={() => navigate('/')}>ホーム</span>
-        <span style={styles.navTab}>マイリスト</span>
-        <span style={styles.navTab}>検索履歴</span>
+        <span style={styles.navTab} onClick={() => navigate('/my-list')}>マイリスト</span>
+        <span style={styles.navTab} onClick={() => navigate('/search-history')}>検索履歴</span>
       </nav>
 
       {/* ── BACK BUTTON ── */}
@@ -617,7 +622,17 @@ const CafeDetailPage = () => {
             <div style={styles.actionRow}>
               <button
                 style={styles.btnFavorite(isFavorite)}
-                onClick={() => setIsFavorite((v) => !v)}
+                onClick={() => {
+                  const token = localStorage.getItem('token');
+                  if (!token) {
+                    alert('ログインが必要です。');
+                    navigate('/login');
+                    return;
+                  }
+
+                  const result = toggleBookmark(id);
+                  setIsFavorite(result.saved);
+                }}
               >
                 {isFavorite ? '♥ 保存済み' : '♡ お気に入り保存'}
               </button>
@@ -713,7 +728,7 @@ const CafeDetailPage = () => {
                           📅 {r.createdAt ? new Date(r.createdAt).toLocaleDateString('ja-JP') : '日付不明'}
                         </span>
                       </div>
-                      
+
                       <span style={styles.reviewStars}>
                         {'★'.repeat(Math.min(ratingNum, 5))}{'☆'.repeat(Math.max(0, 5 - ratingNum))}
                       </span>
@@ -724,11 +739,11 @@ const CafeDetailPage = () => {
                       <>
                         {/* Nếu chưa có bản dịch thì hiện nút bấm */}
                         {!translations[r.id] ? (
-                          <button 
+                          <button
                             onClick={() => handleTranslate(r.id, r.content)}
                             disabled={translatingIds[r.id]}
-                            style={{ 
-                              fontSize: '12px', color: '#1a73e8', background: 'none', 
+                            style={{
+                              fontSize: '12px', color: '#1a73e8', background: 'none',
                               border: 'none', cursor: 'pointer', padding: 0, marginTop: '8px',
                               display: 'flex', alignItems: 'center', gap: '4px'
                             }}
@@ -737,9 +752,9 @@ const CafeDetailPage = () => {
                           </button>
                         ) : (
                           /* Nếu đã dịch xong thì hiện khung kết quả */
-                          <div style={{ 
-                            marginTop: '12px', padding: '10px', backgroundColor: '#f4f6f8', 
-                            borderRadius: '6px', borderLeft: '3px solid #1a73e8' 
+                          <div style={{
+                            marginTop: '12px', padding: '10px', backgroundColor: '#f4f6f8',
+                            borderRadius: '6px', borderLeft: '3px solid #1a73e8'
                           }}>
                             <span style={{ fontSize: '11px', color: '#5f6368', marginBottom: '6px', display: 'block', fontWeight: 'bold' }}>
                               🌐 Google翻訳:
@@ -819,85 +834,85 @@ const CafeDetailPage = () => {
           }}
           onClick={() => setShowReviewModal(false)}
         >
-            <div
-              style={{
-                backgroundColor: '#fff', borderRadius: '14px', padding: '28px 28px',
-                width: '440px', maxWidth: '90vw',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '18px', color: '#333' }}>
-                ✍️ レビューを書く
-              </h3>
+          <div
+            style={{
+              backgroundColor: '#fff', borderRadius: '14px', padding: '28px 28px',
+              width: '440px', maxWidth: '90vw',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '18px', color: '#333' }}>
+              ✍️ レビューを書く
+            </h3>
 
-              {/* Star Rating Picker */}
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '8px' }}>
-                  評価 <span style={{ color: '#c00' }}>*</span>
-                </label>
-                <div style={{ display: 'flex', gap: '4px' }}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      onClick={() => setNewReviewRating(star)}
-                      onMouseEnter={() => setHoveredStar(star)}
-                      onMouseLeave={() => setHoveredStar(0)}
-                      style={{
-                        fontSize: '28px', cursor: 'pointer', transition: 'transform 0.1s',
-                        transform: hoveredStar >= star ? 'scale(1.2)' : 'scale(1)',
-                        color: (hoveredStar || newReviewRating) >= star ? '#F59E0B' : '#ddd',
-                      }}
-                    >
-                      ★
-                    </span>
-                  ))}
-                  <span style={{ fontSize: '13px', color: '#888', alignSelf: 'center', marginLeft: '8px' }}>
-                    {newReviewRating}点
+            {/* Star Rating Picker */}
+            <div style={{ marginBottom: '14px' }}>
+              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '8px' }}>
+                評価 <span style={{ color: '#c00' }}>*</span>
+              </label>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    onClick={() => setNewReviewRating(star)}
+                    onMouseEnter={() => setHoveredStar(star)}
+                    onMouseLeave={() => setHoveredStar(0)}
+                    style={{
+                      fontSize: '28px', cursor: 'pointer', transition: 'transform 0.1s',
+                      transform: hoveredStar >= star ? 'scale(1.2)' : 'scale(1)',
+                      color: (hoveredStar || newReviewRating) >= star ? '#F59E0B' : '#ddd',
+                    }}
+                  >
+                    ★
                   </span>
-                </div>
-              </div>
-
-              {/* Content Input */}
-              <div style={{ marginBottom: '18px' }}>
-                <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                  コメント <span style={{ color: '#c00' }}>*</span>
-                </label>
-                <textarea
-                  rows={4}
-                  value={newReviewContent}
-                  onChange={(e) => setNewReviewContent(e.target.value)}
-                  placeholder="このカフェの感想を教えてください..."
-                  style={{
-                    width: '100%', padding: '10px 12px', borderRadius: '8px',
-                    border: '1.5px solid #ddd', fontSize: '13px', resize: 'vertical',
-                    outline: 'none', fontFamily: 'inherit',
-                    borderColor: newReviewContent.trim() ? '#8b5a2b' : '#ddd',
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                <button
-                  style={{ ...styles.btnLogin, padding: '9px 20px' }}
-                  onClick={() => { setShowReviewModal(false); setNewReviewContent(''); setNewReviewRating(5); }}
-                  disabled={reviewSubmitting}
-                >
-                  キャンセル
-                </button>
-                <button
-                  style={{
-                    ...styles.btnRegister, padding: '9px 20px',
-                    opacity: (!newReviewContent.trim() || reviewSubmitting) ? 0.6 : 1,
-                    cursor: (!newReviewContent.trim() || reviewSubmitting) ? 'not-allowed' : 'pointer',
-                  }}
-                  onClick={handleSubmitReview}
-                  disabled={!newReviewContent.trim() || reviewSubmitting}
-                >
-                  {reviewSubmitting ? '投稿中...' : '投稿する'}
-                </button>
+                ))}
+                <span style={{ fontSize: '13px', color: '#888', alignSelf: 'center', marginLeft: '8px' }}>
+                  {newReviewRating}点
+                </span>
               </div>
             </div>
+
+            {/* Content Input */}
+            <div style={{ marginBottom: '18px' }}>
+              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
+                コメント <span style={{ color: '#c00' }}>*</span>
+              </label>
+              <textarea
+                rows={4}
+                value={newReviewContent}
+                onChange={(e) => setNewReviewContent(e.target.value)}
+                placeholder="このカフェの感想を教えてください..."
+                style={{
+                  width: '100%', padding: '10px 12px', borderRadius: '8px',
+                  border: '1.5px solid #ddd', fontSize: '13px', resize: 'vertical',
+                  outline: 'none', fontFamily: 'inherit',
+                  borderColor: newReviewContent.trim() ? '#8b5a2b' : '#ddd',
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button
+                style={{ ...styles.btnLogin, padding: '9px 20px' }}
+                onClick={() => { setShowReviewModal(false); setNewReviewContent(''); setNewReviewRating(5); }}
+                disabled={reviewSubmitting}
+              >
+                キャンセル
+              </button>
+              <button
+                style={{
+                  ...styles.btnRegister, padding: '9px 20px',
+                  opacity: (!newReviewContent.trim() || reviewSubmitting) ? 0.6 : 1,
+                  cursor: (!newReviewContent.trim() || reviewSubmitting) ? 'not-allowed' : 'pointer',
+                }}
+                onClick={handleSubmitReview}
+                disabled={!newReviewContent.trim() || reviewSubmitting}
+              >
+                {reviewSubmitting ? '投稿中...' : '投稿する'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
