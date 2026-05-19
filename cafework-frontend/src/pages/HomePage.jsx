@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import MapArea from '../components/MapArea';
-import SearchBar from '../components/Search/SearchBar'; 
+import SearchBar from '../components/Search/SearchBar';
+import SearchHistory from '../components/SearchHistory';
 
 const HomePage = () => {
   const [cafes, setCafes] = useState([]);
   // KHO LƯU TRỮ CHỈ ĐƯỜNG: Nếu có dữ liệu thì hiện bảng chỉ đường, nếu null thì hiện SearchBar
   const [routeData, setRouteData] = useState(null);
+  const [activeTab, setActiveTab] = useState("home");
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const handleHistorySearch = (keyword) => {
+        setSearchKeyword(keyword);
+        setActiveTab("home");
+  };
+
 
   // Phép thuật dịch thuật: Dịch lệnh của máy chủ (tiếng Anh) sang tiếng Nhật chuẩn
   const translateStep = (step) => {
@@ -27,10 +35,50 @@ const HomePage = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', fontFamily: 'sans-serif' }}>
-      
-      <div style={{ padding: '0 20px', borderBottom: '1px solid #eaeaea', backgroundColor: '#fff' }}>
-        <div style={{ display: 'inline-block', padding: '10px 15px', borderBottom: '3px solid #8b5a2b', fontWeight: 'bold', color: '#333' }}>ホーム</div>
-      </div>
+
+        <div
+            style={{
+                display: 'flex',
+                borderBottom: '1px solid #eaeaea',
+                backgroundColor: '#fff'
+            }}
+        >
+
+            <button
+                onClick={() => setActiveTab("home")}
+                style={{
+                    padding: '12px 20px',
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    borderBottom:
+                        activeTab === "home"
+                            ? '3px solid #8b5a2b'
+                            : 'none',
+                    fontWeight: 'bold'
+                }}
+            >
+                ホーム
+            </button>
+
+            <button
+                onClick={() => setActiveTab("history")}
+                style={{
+                    padding: '12px 20px',
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    borderBottom:
+                        activeTab === "history"
+                            ? '3px solid #8b5a2b'
+                            : 'none',
+                    fontWeight: 'bold'
+                }}
+            >
+                検索履歴
+            </button>
+
+        </div>
 
       {/* PHẦN THÂN CHIA 2 CỘT */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -80,7 +128,19 @@ const HomePage = () => {
               (Luôn tồn tại để giữ danh sách, nhưng dùng CSS để ẨN đi khi đang xem Chỉ đường)
               ========================================== */}
           <div style={{ display: routeData ? 'none' : 'block', height: '100%', overflow: 'hidden' }}>
-            <SearchBar onSearchData={setCafes} />
+              {activeTab === "home" && (
+                  <SearchBar
+                      onSearchData={setCafes}
+                      externalKeyword={searchKeyword}
+                      onSearchCompleted={() => setSearchKeyword('')}
+                  />
+              )}
+
+              {activeTab === "history" && (
+                  <SearchHistory
+                      onHistoryClick={handleHistorySearch}
+                  />
+              )}
           </div>
 
         </div>
@@ -97,5 +157,4 @@ const HomePage = () => {
     </div>
   );
 };
-
 export default HomePage;

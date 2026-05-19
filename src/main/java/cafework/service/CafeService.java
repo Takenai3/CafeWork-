@@ -6,14 +6,15 @@ import cafework.dto.request.CafeRequest;
 import cafework.model.Cafe;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface CafeService {
+
     List<Cafe> searchByName(String keyword);
-    Cafe getCafeDetailsById(UUID id);
-    SeatStatusUpdateResponse updateSeatStatus(UUID cafeId, SeatStatusUpdateRequest request);
-    
-    // Feature 11b
-    Cafe getCafeByOwnerId(UUID ownerId);
-    Cafe updateCafe(UUID ownerId, CafeRequest request);
+
+    Cafe getCafeDetailsById(String id);
+
+    SeatStatusUpdateResponse updateSeatStatus(
+            String cafeId,
+            SeatStatusUpdateRequest request
+    );
 }
