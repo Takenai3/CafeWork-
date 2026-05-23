@@ -2,6 +2,7 @@ package cafework.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "cafe_images")
@@ -9,10 +10,10 @@ public class CafeImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(name = "cafe_id")
-    private String cafeId;
+    private UUID cafeId;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -23,11 +24,11 @@ public class CafeImage {
     public CafeImage() {}
 
     // --- GETTERS & SETTERS ---
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public String getCafeId() { return cafeId; }
-    public void setCafeId(String cafeId) { this.cafeId = cafeId; }
+    public UUID getCafeId() { return cafeId; }
+    public void setCafeId(UUID cafeId) { this.cafeId = cafeId; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }

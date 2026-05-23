@@ -19,7 +19,14 @@
   align-items: center;
 }
 
+.languageWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .languageDropdown {
+  appearance: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -27,6 +34,43 @@
   color: #4a4a4a;
   font-size: 14px;
   font-weight: 500;
+  background: transparent;
+  border: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.languageDropdown:hover {
+  background-color: #fdf8f5;
+}
+
+.langMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  z-index: 60;
+}
+
+.langMenuItem {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 10px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.langMenuItem:hover {
+  background-color: #fdf8f5;
 }
 
 .flag {
@@ -87,4 +131,97 @@
 
 .registerButton:hover {
   background-color: #fdf8f5;
+}
+
+/* Profile Section Styles */
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.profileLink:hover .userName {
+  color: #333;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #8d6e63;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.logoutButton {
+  background-color: transparent;
+  color: #757575;
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+/* =========================
+   GLOBAL NAV TABS
+========================= */
+
+.navTabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 20px;
+  background: #fff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.navTab {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.navTab:hover {
+  color: #333;
+  background: #fafafa;
+}
+
+.activeTab {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: 700;
+  border-bottom: 3px solid #8b5a2b;
 }

@@ -1,25 +1,31 @@
 package cafework.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
+import jakarta.persistence.Transient;
 @Entity
 @Table(name = "reviews")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String userId;
+    @Transient
+    private String userName;
+    
     private String cafeId;
     private String content;
     private String rating;
     private String language;
-
-    public Review() {}
+    private LocalDateTime createdAt;
+    public Review() {
+    }
 
     public String getId() {
         return id;
@@ -67,5 +73,21 @@ public class Review {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

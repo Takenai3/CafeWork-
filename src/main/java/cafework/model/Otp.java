@@ -28,6 +28,7 @@ public class Otp {
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
 
+    @Builder.Default
     @Column(name = "is_used")
     private boolean isUsed = false;
 

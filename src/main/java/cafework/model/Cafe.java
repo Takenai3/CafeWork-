@@ -1,136 +1,62 @@
 package cafework.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Formula; // Bổ sung thư viện này
+import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.*;
 
 @Entity
 @Table(name = "cafes")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Cafe {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String name;
+    
+    @Transient //NOT A COLUMN IN DATABASE
+    private String ownerName;
+    @Transient //NOT A COLUMN IN DATABASE
+    private String email;
+    private String phone;
+    
+    @Column(name = "open_hours")
+    private String openHours;
+    
     private String address;
     private String description;
     
     @Column(name = "seat_status")
-    private String seatStatus; 
+    private String seatStatus;
 
-    private String openHours;
-    private String ownerId;
-    
-    // Yêu cầu Database tự đếm trung bình cộng (AVG) của cột rating trong bảng reviews
     @Formula("(SELECT COALESCE(AVG(r.rating), 0.0) FROM reviews r WHERE r.cafe_id = id)")
     private Double rating;     
 
     private Double latitude;   
     private Double longitude;  
 
-    public Cafe() {}
+    @Column(name = "owner_id")
+    private UUID ownerId;
 
-    // --- GETTERS & SETTERS ---
+    @OneToOne
+    @JoinColumn(name = "owner_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private User owner;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getSeatStatus() {
-        return seatStatus;
-    }
-
-    public void setSeatStatus(String seatStatus) {
-        this.seatStatus = seatStatus;
-    }
-
-    public String getOpenHours() {
-        return openHours;
-    }
-
-    public void setOpenHours(String openHours) {
-        this.openHours = openHours;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-    
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "cafe_id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<CafeImage> images;
 
-    // Getter và Setter cho danh sách ảnh
-    public List<CafeImage> getImages() {
-        return images;
-    }
-
-    public void setImages(List<CafeImage> images) {
-        this.images = images;
-    }
+    @OneToMany(mappedBy = "cafeId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
 }

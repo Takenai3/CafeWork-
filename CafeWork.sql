@@ -776,4 +776,3 @@ ALTER TABLE ONLY public.search_histories
 --
 -- PostgreSQL database dump complete
 --
-

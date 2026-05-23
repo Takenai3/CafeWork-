@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 @Table(name = "coupons")
 public class Coupon {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String cafeId;
@@ -18,7 +18,8 @@ public class Coupon {
     private String description;
     private String discountPercent;
 
-    public Coupon() {}
+    public Coupon() {
+    }
 
     public String getId() {
         return id;
